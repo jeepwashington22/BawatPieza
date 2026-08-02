@@ -1,1 +1,3 @@
 # W.I.W.I-Waste-Into-Watts-Ions
+
+Project W.I.W.I. (Waste Into Watts & Ions) is a smart bio-energy and resource-recovery system built to tackle sanitation and power challenges in Caloocan City's public school evacuation centers. Using a 3-tier Microbial Fuel Cell (MFC) array, it harvests renewable electricity from human urine to power essential emergency devices during grid outages. Simultaneously, the system processes the remaining waste into safe, nutrient-rich agricultural fertilizers. The entire process is monitored by an AI-powered IoT mobile app that tracks energy generation and predicts the best times for fertilizer harvesting.
