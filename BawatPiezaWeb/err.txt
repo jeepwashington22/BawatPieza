@@ -1,0 +1,9 @@
+[redis] error: 
+[redis] could not connect at startup: Connection is closed.
+[redis] error: 
+[redis] error: 
+[redis] error: 
+[redis] error: 
+[redis] error: 
+[redis] error: 
+[redis] error: 
