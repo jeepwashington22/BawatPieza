@@ -41,8 +41,8 @@ function colorFor(value: number): ScaleStop {
 }
 
 /* ------- Deterministic sample pressure field (tile grid) ------- */
-const ROWS = 10;
-const COLS = 14;
+const ROWS = 6;
+const COLS = 5;
 
 function buildGrid(): { value: number }[][] {
   const grid: { value: number }[][] = [];
@@ -52,10 +52,10 @@ function buildGrid(): { value: number }[][] {
       const seed = (r * 12.9898 + c * 78.233) % 10;
       const rand = Math.abs(Math.sin(seed)) * 43758.5453;
       const frac = rand - Math.floor(rand);
-      // create a "hot spot" (path of travel) around center-right
+      // create a "hot spot" (path of travel), scaled to the grid's own dimensions
       const hotspot =
-        Math.exp(-((r - 6) ** 2) / 12 - ((c - 10) ** 2) / 8) * 70 +
-        Math.exp(-((r - 2) ** 2) / 10 - ((c - 3) ** 2) / 9) * 45;
+        Math.exp(-((r - (ROWS - 2)) ** 2) / 5 - ((c - (COLS - 1)) ** 2) / 4) * 70 +
+        Math.exp(-((r - 1) ** 2) / 4 - ((c - 1) ** 2) / 4) * 45;
       let value = frac * 55 + hotspot;
       value = Math.min(100, Math.max(0, Math.round(value)));
       row.push({ value });
@@ -172,7 +172,7 @@ export default function PressureHeatmapPage() {
               <p className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-[var(--muted)]">
                 <Thermometer className="h-3.5 w-3.5 text-[var(--text)]" /> Active Tiles
               </p>
-              <p className="mt-2 text-3xl font-bold">{activeTiles}<span className="text-base text-[var(--faint)]"> / 140</span></p>
+              <p className="mt-2 text-3xl font-bold">{activeTiles}<span className="text-base text-[var(--faint)]"> / 30</span></p>
             </div>
             <div className="rounded-2xl border border-[var(--tint10)] bg-[var(--surface)] p-5 shadow-sm">
               <p className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-[var(--muted)]">
@@ -209,11 +209,11 @@ export default function PressureHeatmapPage() {
             </div>
           </section>
 
-          {/* Heatmap grid */}
+                {/* Heatmap grid */}
           <section className="mt-6 rounded-3xl border border-[var(--tint10)] bg-[var(--surface)] p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-sm font-semibold">
-                Tile Pressure Field <span className="font-normal text-[var(--faint)]">(14 · 10 array)</span>
+                Tile Pressure Field <span className="font-normal text-[var(--faint)]">(5 · 6 array)</span>
               </h2>
               <button
                 type="button"
@@ -223,26 +223,24 @@ export default function PressureHeatmapPage() {
               </button>
             </div>
 
-            <div className="overflow-x-auto">
-              <div className="grid min-w-[560px] grid-cols-[repeat(14,1fr)] gap-1.5">
-                {grid.map((row, r) =>
-                  row.map((cell, c) => {
-                    const stop = colorFor(cell.value);
-                    return (
-                      <div
-                        key={`${r}-${c}`}
-                        title={`Tile (${r},${c}) · ${cell.value} psi · ${stop.label}`}
-                        style={{ background: stop.color, opacity: 0.55 + cell.value / 220 }}
-                        className="group relative aspect-square rounded-md transition hover:scale-105 hover:opacity-100"
-                      >
-                        <span className="pointer-events-none absolute inset-0 hidden items-center justify-center text-[10px] font-bold text-white group-hover:flex">
-                          {cell.value}
-                        </span>
-                      </div>
-                    );
-                  }),
-                )}
-              </div>
+            <div className="grid w-full grid-cols-5 gap-2 sm:gap-3">
+              {grid.map((row, r) =>
+                row.map((cell, c) => {
+                  const stop = colorFor(cell.value);
+                  return (
+                    <div
+                      key={`${r}-${c}`}
+                      title={`Tile (${r},${c}) · ${cell.value} psi · ${stop.label}`}
+                      style={{ background: stop.color, opacity: 0.55 + cell.value / 220 }}
+                      className="group relative aspect-square w-full rounded-xl transition hover:scale-105 hover:opacity-100"
+                    >
+                      <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm font-bold text-white opacity-0 transition-opacity group-hover:opacity-100 sm:text-base">
+                        {cell.value}
+                      </span>
+                    </div>
+                  );
+                }),
+              )}
             </div>
 
             {/* Gradient bar + low/high labels */}
