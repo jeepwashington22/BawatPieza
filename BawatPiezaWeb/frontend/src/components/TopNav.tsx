@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Search, Bell, ChevronDown, User, Settings, LogOut, Gauge } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
+import ConfirmationModal from "./ConfirmationModal";
 
 type Notification = {
   id: number;
@@ -28,9 +29,24 @@ export default function TopNav({
 }) {
   const [notifOpen, setNotifOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      const { supabase } = await import("@/lib/supabaseClient");
+      await supabase.auth.signOut();
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Logout error:", err);
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-[var(--line)] bg-[var(--glass)] px-4 py-3 backdrop-blur-xl sm:px-6">
+    <>
+      <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-[var(--line)] bg-[var(--glass)] px-4 py-3 backdrop-blur-xl sm:px-6">
       <div className="min-w-0 flex-1">
         <h1 className="truncate text-xl font-bold tracking-tight text-[var(--text)]">{title}</h1>
         {subtitle && (
@@ -105,7 +121,7 @@ export default function TopNav({
                   <Link href="/dashboard/heatmap" className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-[var(--muted)] transition hover:bg-[var(--background)] hover:text-[var(--text)]"><Gauge className="h-4 w-4" /> Heatmap view</Link>
                   <Link href="/dashboard/profile" className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-[var(--muted)] transition hover:bg-[var(--background)] hover:text-[var(--text)]"><User className="h-4 w-4" /> My profile</Link>
                   <Link href="/dashboard/profile" className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-[var(--muted)] transition hover:bg-[var(--background)] hover:text-[var(--text)]"><Settings className="h-4 w-4" /> Settings</Link>
-                  <Link href="/" className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-red-500 transition hover:bg-red-500/10"><LogOut className="h-4 w-4" /> Log out</Link>
+                  <button type="button" onClick={() => setShowLogoutConfirm(true)} className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-red-500 transition hover:bg-red-500/10"><LogOut className="h-4 w-4" /> Log out</button>
                 </div>
               </div>
             </>
@@ -113,5 +129,22 @@ export default function TopNav({
         </div>
       </div>
     </header>
+
+    {/* Logout Confirmation Modal */}
+    <ConfirmationModal
+      isOpen={showLogoutConfirm}
+      title="Sign Out?"
+      message="You will be logged out and need to sign in again to access the dashboard."
+      confirmText="Sign Out"
+      cancelText="Cancel"
+      isDestructive={false}
+      isLoading={isLoggingOut}
+      onConfirm={handleLogout}
+      onCancel={() => {
+        setShowLogoutConfirm(false);
+        setUserOpen(false);
+      }}
+    />
+    </>
   );
 }

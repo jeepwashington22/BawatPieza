@@ -1,22 +1,92 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4f4f4; /* whitesmoke */
+  --surface: #ffffff; /* white */
+  --foreground: #0a2a4a; /* prussian blue */
+  --prussian: #0a2a4a;
+  --prussian-soft: #3b5b7a;
+  --butter: #f6c445;
+  --text: #0a2a4a;
+  --muted: rgba(10, 42, 74, 0.62);
+  --faint: rgba(10, 42, 74, 0.42);
+  --soft: rgba(10, 42, 74, 0.72);
+  --line: rgba(10, 42, 74, 0.12);
+  --line-strong: rgba(10, 42, 74, 0.18);
+  --glass: rgba(255, 255, 255, 0.9);
+  --shadow: rgba(10, 42, 74, 0.15);
+  --butter-30: rgba(246, 196, 69, 0.3);
+  --butter-20: rgba(246, 196, 69, 0.2);
+  --butter-15: rgba(246, 196, 69, 0.15);
+  --chart-grid: rgba(10, 42, 74, 0.08);
+  --tint5: rgba(10, 42, 74, 0.05);
+  --tint10: rgba(10, 42, 74, 0.1);
+  --tint20: rgba(10, 42, 74, 0.2);
+}
+
+.dark {
+  --background: #081426;
+  --surface: #0e1f38;
+  --foreground: #e9f0f7;
+  --prussian: #123456;
+  --prussian-soft: #3b5b7a;
+  --butter: #ffdd7a;
+  --text: #e9f0f7;
+  --muted: rgba(233, 240, 247, 0.62);
+  --faint: rgba(233, 240, 247, 0.42);
+  --soft: rgba(233, 240, 247, 0.74);
+  --line: rgba(233, 240, 247, 0.14);
+  --line-strong: rgba(233, 240, 247, 0.22);
+  --glass: rgba(14, 31, 56, 0.9);
+  --shadow: rgba(0, 0, 0, 0.45);
+  --butter-30: rgba(255, 221, 122, 0.3);
+  --butter-20: rgba(255, 221, 122, 0.2);
+  --butter-15: rgba(255, 221, 122, 0.15);
+  --chart-grid: rgba(233, 240, 247, 0.1);
+  --tint5: rgba(233, 240, 247, 0.06);
+  --tint10: rgba(233, 240, 247, 0.12);
+  --tint20: rgba(233, 240, 247, 0.2);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-prussian: var(--prussian);
+  --color-butter: var(--butter);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Smooth dark-mode transition animation */
+body,
+header,
+aside,
+nav,
+main,
+div,
+span,
+p,
+h1,
+h2,
+h3,
+h4,
+button,
+input,
+a,
+li,
+ul,
+section,
+td,
+th,
+tr,
+label,
+svg {
+  transition:
+    background-color 0.45s ease,
+    border-color 0.45s ease,
+    color 0.35s ease,
+    fill 0.35s ease,
+    box-shadow 0.45s ease;
 }
 
 body {
@@ -24,3 +94,72 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
+
+/* ---------- TileLoader: piezoelectric tile energy-pulse animation ---------- */
+@keyframes bp-tile-pulse {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(0.85);
+    box-shadow: none;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+    box-shadow: 0 0 10px 2px var(--butter-30);
+  }
+}
+.bp-tile-pulse {
+  animation: bp-tile-pulse 1.3s ease-in-out infinite;
+}
+
+@keyframes bp-bolt-flash {
+  0%,
+  100% {
+    opacity: 0.5;
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 6px var(--butter));
+  }
+}
+.bp-bolt-flash {
+  animation: bp-bolt-flash 1.3s ease-in-out infinite;
+}
+
+@keyframes bp-dots {
+  0% {
+    content: "";
+  }
+  33% {
+    content: ".";
+  }
+  66% {
+    content: "..";
+  }
+  100% {
+    content: "...";
+  }
+}
+.bp-dots::after {
+  content: "...";
+  animation: bp-dots 1.5s steps(1) infinite;
+}
+
+/* Page content fade-in on route change */
+@keyframes bp-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.bp-fade-in {
+  animation: bp-fade-up 0.4s ease both;
+}
+
+

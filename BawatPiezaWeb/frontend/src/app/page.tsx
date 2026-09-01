@@ -66,61 +66,61 @@ export default function LandingPage() {
   };
 
   return (
-    <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-[#070f13] px-4 py-12 text-white">
+    <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-[var(--background)] px-4 py-12 text-[var(--text)]">
       {/* Background gradient orbs */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 -top-40 h-[34rem] w-[34rem] rounded-full bg-emerald-500/20 blur-[120px]" />
-        <div className="absolute -bottom-48 -right-40 h-[36rem] w-[36rem] rounded-full bg-teal-400/20 blur-[120px]" />
-        <div className="absolute left-1/2 top-1/3 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-cyan-500/10 blur-[110px]" />
+        <div className="absolute -left-40 -top-40 h-[34rem] w-[34rem] rounded-full bg-[var(--butter-20)] blur-[120px]" />
+        <div className="absolute -bottom-48 -right-40 h-[36rem] w-[36rem] rounded-full bg-[var(--butter-30)] blur-[120px]" />
+        <div className="absolute left-1/2 top-1/3 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-[var(--tint10)] blur-[110px]" />
         {/* Subtle grid */}
         <div
           className="absolute inset-0 opacity-[0.06]"
           style={{
             backgroundImage:
-              "linear-gradient(#ffffff22 1px, transparent 1px), linear-gradient(90deg, #ffffff22 1px, transparent 1px)",
+              "linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px)",
             backgroundSize: "46px 46px",
           }}
         />
         {/* Floating eco icons */}
-        <Recycle className="absolute left-[10%] top-[18%] h-24 w-24 rotate-12 text-emerald-400/10" />
-        <Zap className="absolute right-[12%] top-[26%] h-20 w-20 text-teal-300/10" />
-        <Leaf className="absolute bottom-[16%] left-[14%] h-20 w-20 text-emerald-300/10" />
-        <Zap className="absolute bottom-[24%] right-[10%] h-24 w-24 -rotate-12 text-cyan-300/10" />
+        <Recycle className="absolute left-[10%] top-[18%] h-24 w-24 rotate-12 text-[var(--butter)]/10" />
+        <Zap className="absolute right-[12%] top-[26%] h-20 w-20 text-[var(--prussian-soft)]/10" />
+        <Leaf className="absolute bottom-[16%] left-[14%] h-20 w-20 text-[var(--butter)]/10" />
+        <Zap className="absolute bottom-[24%] right-[10%] h-24 w-24 -rotate-12 text-[var(--prussian-soft)]/10" />
       </div>
 
       <div className="relative z-10 flex w-full max-w-md flex-col">
         {/* Brand header */}
         <div className="mb-8 flex flex-col items-center text-center">
-          <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/40">
-            <Recycle className="h-8 w-8 text-white" />
+          <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--prussian)] to-[var(--prussian-soft)] shadow-lg shadow-[var(--shadow)]">
+            <Recycle className="h-8 w-8 text-[var(--text)]" />
           </div>
           <h1 className="text-4xl font-bold tracking-tight">
-            Bawat<span className="text-emerald-400">Pieza</span>
+            Bawat<span className="text-[var(--butter)]">Pieza</span>
           </h1>
-          <p className="mt-2 text-sm font-medium uppercase tracking-[0.22em] text-emerald-100/50">
-            Waste Into Watts Ion
+          <p className="mt-2 text-sm font-medium uppercase tracking-[0.22em] text-[var(--muted)]">
+          Piezo Technology - Kinetic Energy to Electricity
           </p>
         </div>
 
         {/* Card */}
-        <div className="rounded-3xl border border-white/10 bg-white/[0.06] p-8 shadow-2xl shadow-black/40 backdrop-blur-xl">
+        <div className="rounded-3xl border border-[var(--line)] bg-[var(--surface)]/[0.06] p-8 shadow-2xl shadow-black/40 backdrop-blur-xl">
           <h2 className="mb-1 text-2xl font-semibold">Welcome back</h2>
-          <p className="mb-7 text-sm text-white/60">
+          <p className="mb-7 text-sm text-[var(--muted)]">
             Sign in to your BawatPieza account to continue.
           </p>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <label className="mb-2 block text-sm font-medium text-white/80" htmlFor="email">
+            <label className="mb-2 block text-sm font-medium text-[var(--text)]/80" htmlFor="email">
               Email
             </label>
             <div className="relative mb-1">
-              <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-white/40" />
+              <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--text)]/40" />
               <input
                 id="email"
                 type="email"
                 autoComplete="email"
                 placeholder="you@example.com"
-                className={`w-full rounded-xl border bg-white/[0.04] py-3 pl-11 pr-4 text-sm text-white placeholder-white/30 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30 ${
-                  errors.email ? "border-red-400/70" : "border-white/10"
+                className={`w-full rounded-xl border bg-[var(--surface)] py-3 pl-11 pr-4 text-sm text-[var(--text)] placeholder-[var(--faint)] outline-none transition focus:border-[var(--butter)] focus:ring-2 focus:ring-[var(--butter)]/30 ${
+                  errors.email ? "border-red-400/70" : "border-[var(--line)]"
                 }`}
                 {...register("email")}
               />
@@ -130,25 +130,25 @@ export default function LandingPage() {
             )}
 
             <div className="mb-1 mt-5 flex items-center justify-between">
-              <label className="block text-sm font-medium text-white/80" htmlFor="password">
+              <label className="block text-sm font-medium text-[var(--text)]/80" htmlFor="password">
                 Password
               </label>
               <button
                 type="button"
-                className="text-xs font-medium text-emerald-300 hover:text-emerald-200"
+                className="text-xs font-medium text-[var(--butter)] hover:text-[var(--text)]"
               >
                 Forgot password?
               </button>
             </div>
             <div className="relative">
-              <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-white/40" />
+              <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--text)]/40" />
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
-                placeholder="••••••••"
-                className={`w-full rounded-xl border bg-white/[0.04] py-3 pl-11 pr-12 text-sm text-white placeholder-white/30 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30 ${
-                  errors.password ? "border-red-400/70" : "border-white/10"
+                placeholder="Password"
+                className={`w-full rounded-xl border bg-[var(--surface)] py-3 pl-11 pr-12 text-sm text-[var(--text)] placeholder-[var(--faint)] outline-none transition focus:border-[var(--butter)] focus:ring-2 focus:ring-[var(--butter)]/30 ${
+                  errors.password ? "border-red-400/70" : "border-[var(--line)]"
                 }`}
                 {...register("password")}
               />
@@ -156,7 +156,7 @@ export default function LandingPage() {
                 type="button"
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white/70"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text)]/40 transition hover:text-[var(--soft)]"
               >
                 {showPassword ? (
                   <EyeOff className="h-5 w-5" />
@@ -170,12 +170,12 @@ export default function LandingPage() {
             )}
 
             <div className="mt-4 flex items-center justify-between">
-              <label className="flex cursor-pointer items-center gap-2 text-sm text-white/70">
+              <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--soft)]">
                 <input
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
-                  className="h-4 w-4 accent-emerald-400"
+                  className="h-4 w-4 accent-[var(--butter)]"
                 />
                 Remember me
               </label>
@@ -189,11 +189,11 @@ export default function LandingPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:brightness-110 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--prussian)] to-[var(--prussian-soft)] py-3 text-sm font-semibold text-[var(--text)] shadow-lg shadow-[var(--shadow)] transition hover:brightness-110 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
             >
               {submitting ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Signing in…
+                  <Loader2 className="h-4 w-4 animate-spin" /> Signing in\u00b7
                 </>
               ) : (
                 <>
@@ -204,13 +204,13 @@ export default function LandingPage() {
           </form>
 
           <div className="my-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-white/10" />
-            <span className="text-xs uppercase tracking-widest text-white/40">or</span>
-            <div className="h-px flex-1 bg-white/10" />
+            <div className="h-px flex-1 bg-[var(--surface)]/10" />
+            <span className="text-xs uppercase tracking-widest text-[var(--text)]/40">or</span>
+            <div className="h-px flex-1 bg-[var(--surface)]/10" />
           </div>
           <button
             type="button"
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] py-3 text-sm font-medium text-white/80 transition hover:bg-white/[0.08]"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-[var(--surface)] py-3 text-sm font-medium text-[var(--text)]/80 transition hover:bg-[var(--surface)]/[0.08]"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24">
               <path
@@ -233,16 +233,16 @@ export default function LandingPage() {
             Continue with Google
           </button>
 
-          <p className="mt-6 text-center text-sm text-white/60">
+          <p className="mt-6 text-center text-sm text-[var(--muted)]">
             Don&apos;t have an account?{" "}
-            <button className="font-semibold text-emerald-300 hover:text-emerald-200">
+            <button className="font-semibold text-[var(--butter)] hover:text-[var(--text)]">
               Sign up
             </button>
           </p>
         </div>
 
-        <p className="mt-8 text-center text-xs text-white/40">
-          © {new Date().getFullYear()} BawatPieza · Sustainable energy for everyone.
+        <p className="mt-8 text-center text-xs text-[var(--text)]/40">
+          \u00b7 {new Date().getFullYear()} BawatPieza \u00b7 Sustainable energy for everyone.
         </p>
       </div>
     </main>

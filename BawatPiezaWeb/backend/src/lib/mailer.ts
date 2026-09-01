@@ -47,10 +47,10 @@ export interface SendMailInput {
 }
 
 export async function sendMail(input: SendMailInput): Promise<void> {
-  const from = process.env.MAIL_FROM;
+  const from = process.env.MAIL_FROM ?? process.env.BREVO_SMTP_USER;
   const fromName = process.env.MAIL_FROM_NAME ?? 'BawatPieza';
 
-  if (!from) missing('MAIL_FROM');
+  if (!from) missing('MAIL_FROM or BREVO_SMTP_USER');
 
   await getTransporter().sendMail({
     from: `"${fromName}" <${from}>`,

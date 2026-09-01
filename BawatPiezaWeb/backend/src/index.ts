@@ -6,8 +6,10 @@ import morgan from 'morgan';
 
 import healthRouter from './routes/health.js';
 import emailRouter from './routes/email.js';
+import accountsRouter from './routes/accounts.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { connectRedis, disconnectRedis } from './lib/redis.js';
+import { verifyMailer } from './lib/mailer.js';
 
 const app = express();
 
@@ -18,6 +20,7 @@ app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 app.use('/health', healthRouter);
 app.use('/email', emailRouter);
+app.use('/accounts', accountsRouter);
 
 app.use((_req, res) => {
   res.status(404).json({ error: 'Not found' });
@@ -32,6 +35,13 @@ async function main(): Promise<void> {
     await connectRedis();
   } catch (err) {
     console.warn('[redis] could not connect at startup:', (err as Error).message);
+  }
+
+  try {
+    const mailReady = await verifyMailer();
+    console.log(mailReady ? '[mailer] Brevo SMTP is ready for account verification emails.' : '[mailer] Brevo SMTP check failed; email delivery may fail.');
+  } catch (err) {
+    console.warn('[mailer] SMTP verification error:', (err as Error).message);
   }
 
   const server = app.listen(PORT, () => {
