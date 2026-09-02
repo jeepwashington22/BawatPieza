@@ -18,15 +18,13 @@ create table if not exists public.user_accounts (
 
 alter table public.user_accounts enable row level security;
 
--- Admin-only read via the API (service role bypasses RLS anyway)
+-- Admin reads happen via the backend service-role key, which bypasses
+-- RLS entirely. We do NOT reference user_accounts inside its own RLS
+-- policy (that would cause infinite recursion). Regular users read their
+-- own row via the "users read own profile" policy in 002_profile_rls.sql.
 create policy "admins read user_accounts"
   on public.user_accounts for select
-  using (
-    exists (
-      select 1 from public.user_accounts me
-      where me.id = auth.uid() and me.role = 'admin'
-    )
-  );
+  using (auth.role() = 'service_role');
 
 -- Keep user_accounts in sync whenever an auth user is created
 create or replace function public.handle_new_auth_user()

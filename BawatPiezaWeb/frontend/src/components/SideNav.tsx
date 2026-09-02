@@ -16,6 +16,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+import { useUser } from "@/context/UserContext";
 
 type NavItem = {
   label: string;
@@ -38,6 +39,10 @@ const items: NavItem[] = [
 
 export default function SideNav() {
   const pathname = usePathname();
+  const { user } = useUser();
+
+  const fullName = [user.firstname, user.lastname].filter(Boolean).join(" ") || "Loading...";
+  const initials = [user.firstname, user.lastname].filter(Boolean).map((s) => s[0]?.toUpperCase()).join("") || "?";
 
   const isActive = (href: string) =>
     href === "/dashboard"
@@ -114,11 +119,11 @@ export default function SideNav() {
         </button>
         <div className="mt-4 flex items-center gap-3 rounded-xl border border-[var(--line)] bg-[var(--background)] px-3.5 py-3">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[var(--prussian)] to-[var(--prussian-soft)] text-sm font-bold text-white">
-            JW
+            {initials}
           </span>
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-[var(--text)]">Jane Doe</p>
-            <p className="truncate text-[11px] text-[var(--faint)]">jane@bawatpieza.com</p>
+            <p className="truncate text-sm font-semibold text-[var(--text)]">{fullName}</p>
+            <p className="truncate text-[11px] text-[var(--faint)]">{user.email}</p>
           </div>
         </div>
       </div>

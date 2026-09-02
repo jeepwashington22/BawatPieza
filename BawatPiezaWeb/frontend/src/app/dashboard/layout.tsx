@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import TileLoader from "@/components/TileLoader";
+import { UserProvider } from "@/context/UserContext";
 
 /**
  * Client-side session guard for every /dashboard/* route.
@@ -57,5 +58,5 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     );
   }
 
-  return <>{children}</>;
+  return <UserProvider>{children}</UserProvider>;
 }

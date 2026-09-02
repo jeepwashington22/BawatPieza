@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Search, Bell, ChevronDown, User, Settings, LogOut, Gauge } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
+import { useUser } from "@/context/UserContext";
 import ConfirmationModal from "./ConfirmationModal";
 
 type Notification = {
@@ -27,10 +28,14 @@ export default function TopNav({
   title: string;
   subtitle?: string;
 }) {
+  const { user, loading } = useUser();
   const [notifOpen, setNotifOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const fullName = [user.firstname, user.lastname].filter(Boolean).join(" ") || "Loading...";
+  const initials = [user.firstname, user.lastname].filter(Boolean).map((s) => s[0]?.toUpperCase()).join("") || "?";
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -98,10 +103,10 @@ export default function TopNav({
         {/* User profile */}
         <div className="relative">
           <button type="button" onClick={() => { setUserOpen((v) => !v); setNotifOpen(false); }} className="flex items-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] py-1 pl-1 pr-2.5 transition hover:bg-[var(--background)]">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--prussian)] to-[var(--prussian-soft)] text-xs font-bold text-white">JW</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--prussian)] to-[var(--prussian-soft)] text-xs font-bold text-white">{initials}</span>
             <span className="hidden text-left sm:block">
-              <span className="block text-xs font-semibold leading-tight text-[var(--text)]">Jane Doe</span>
-              <span className="block text-[10px] text-[var(--faint)]">ADMIN</span>
+              <span className="block text-xs font-semibold leading-tight text-[var(--text)]">{fullName}</span>
+              <span className="block text-[10px] text-[var(--faint)]">{user.role === "admin" ? "ADMIN" : "STAFF"}</span>
             </span>
             <ChevronDown className="h-4 w-4 text-[var(--faint)]" />
           </button>
@@ -111,10 +116,10 @@ export default function TopNav({
               <div className="fixed inset-0 z-30" onClick={() => setUserOpen(false)} />
               <div className="absolute right-0 z-40 mt-2 w-56 rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2 shadow-xl shadow-[var(--shadow)]">
                 <div className="flex items-center gap-3 border-b border-[var(--line)] px-3 py-2.5">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[var(--prussian)] to-[var(--prussian-soft)] text-sm font-bold text-white">JW</span>
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[var(--prussian)] to-[var(--prussian-soft)] text-sm font-bold text-white">{initials}</span>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-[var(--text)]">Jane Doe</p>
-                    <p className="truncate text-xs text-[var(--faint)]">jane@bawatpieza.com</p>
+                    <p className="truncate text-sm font-semibold text-[var(--text)]">{fullName}</p>
+                    <p className="truncate text-xs text-[var(--faint)]">{user.email}</p>
                   </div>
                 </div>
                 <div className="space-y-1 pt-1.5">
