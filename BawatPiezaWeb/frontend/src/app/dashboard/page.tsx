@@ -56,9 +56,9 @@ const weekly = [
 ];
 
 const statCards = [
-  { label: "Energy Today", value: "14.2 kWh", delta: "+12%", up: true, icon: Zap },
-  { label: "Waste Converted", value: "8.6 kg", delta: "+5%", up: true, icon: Recycle },
-  { label: "CO2 Offset", value: "3.9 kg", delta: "-8%", up: false, icon: Leaf },
+  { label: "Energy Today", value: "14.2", unit: "kWh", delta: "+12%", up: true, icon: Zap, bg: "bg-[var(--butter)]", valueTxt: "text-[var(--text)]", mutedTxt: "text-[var(--text)]/70", deltaTxt: (up: boolean) => up ? "text-[var(--text)]" : "text-[var(--text)]/80" },
+  { label: "Waste Converted", value: "8.6", unit: "kg", delta: "+5%", up: true, icon: Recycle, bg: "bg-[var(--prussian-soft)]", valueTxt: "text-white", mutedTxt: "text-white/75", deltaTxt: () => "text-white/90" },
+  { label: "CO₂ Offset", value: "3.9", unit: "kg", delta: "-8%", up: false, icon: Leaf, bg: "bg-[var(--prussian)]", valueTxt: "text-white", mutedTxt: "text-white/75", deltaTxt: () => "text-white/90" },
 ];
 
 const sourcesData = [
@@ -110,33 +110,43 @@ export default function DashboardPage() {
 
           {/* Stat cards */}
           <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {statCards.map(({ label, value, delta, up, icon: Icon }) => (
+            {statCards.map(({ label, value, unit, delta, up, icon: Icon, bg, valueTxt, mutedTxt, deltaTxt }) => (
               <div
                 key={label}
-                className="flex items-center justify-between rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 backdrop-blur"
+                style={{ boxShadow: "var(--card-shadow)" }}
+                className={`group relative overflow-hidden rounded-3xl ${bg} p-5 transition-transform duration-300 hover:-translate-y-1`}
               >
-                <div>
-                  <p className="text-sm font-bold">{value}</p>
-                  <p className="text-xs text-[var(--muted)]">{label}</p>
-                  <p
-                    className={`mt-1 flex items-center gap-0.5 text-xs font-semibold ${
-                      up ? "text-[var(--butter)]" : "text-red-400"
-                    }`}
-                  >
-                    {up ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
-                    {delta} vs yesterday
-                  </p>
+                {/* subtle sheen overlay */}
+                <span aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-28 w-28 rounded-full bg-white/15 blur-2xl" />
+                <div className="relative flex items-start justify-between">
+                  <div className="min-w-0">
+                    <p className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${mutedTxt}`}>{label}</p>
+                    <div className="mt-2 flex items-baseline gap-1">
+                      <span className={`text-3xl font-bold tracking-tight ${valueTxt}`}>{value}</span>
+                      <span className={`text-sm font-medium ${mutedTxt}`}>{unit}</span>
+                    </div>
+                    <p className={`mt-2.5 flex items-center gap-1 text-xs font-semibold ${deltaTxt(up)}`}>
+                      <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/25">
+                        {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                      </span>
+                      {delta} <span className={`ml-0.5 font-normal ${mutedTxt}`}>vs yesterday</span>
+                    </p>
+                  </div>
+                  <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/25 ${valueTxt}`}>
+                    <Icon className="h-6 w-6" />
+                  </span>
                 </div>
-                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--butter-20)] text-[var(--butter)]">
-                  <Icon className="h-6 w-6" />
-                </span>
               </div>
             ))}
           </section>
           {/* Main grid */}
           <section className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-3">
             {/* Live consumption */}
-            <div className="rounded-3xl border border-[var(--line)] bg-gradient-to-br from-[var(--butter-20)] via-[var(--tint10)] to-[var(--tint5)] p-6 backdrop-blur-xl lg:col-span-2">
+            <div
+              style={{ boxShadow: "var(--card-shadow-lg)" }}
+              className="relative overflow-hidden rounded-3xl border border-[var(--line)] bg-gradient-to-br from-[var(--butter-20)] via-[var(--tint10)] to-[var(--tint5)] p-6 backdrop-blur-xl lg:col-span-2"
+            >
+              <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--butter)] via-[var(--prussian-soft)] to-transparent" />
               <div className="flex items-start justify-between">
                 <div>
                   <p className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-[var(--muted)]">
@@ -178,7 +188,8 @@ export default function DashboardPage() {
             </div>
 
             {/* Energy mix donut */}
-            <div className="rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-6 backdrop-blur">
+            <div style={{ boxShadow: "var(--card-shadow)" }} className="relative overflow-hidden rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-6">
+              <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--prussian)] to-transparent" />
               <div className="mb-2 flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-[var(--soft)]">Energy Mix</h2>
                 <button type="button" className="text-xs font-medium text-[var(--butter)] hover:text-[var(--text)]">
@@ -227,7 +238,8 @@ export default function DashboardPage() {
               </div>
             </div>
             {/* Weekly usage */}
-            <div className="rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-6 backdrop-blur">
+            <div style={{ boxShadow: "var(--card-shadow)" }} className="relative overflow-hidden rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-6">
+              <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--prussian-soft)] to-transparent" />
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-[var(--soft)]">Weekly Usage</h2>
                 <span className="flex items-center gap-1 text-xs font-semibold text-[var(--butter)]">
@@ -257,7 +269,8 @@ export default function DashboardPage() {
 
             {/* Battery + wallet */}
             <div className="flex flex-col gap-5 lg:col-span-2">
-              <div className="flex flex-col items-start justify-between gap-4 rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-6 backdrop-blur sm:flex-row sm:items-center">
+              <div style={{ boxShadow: "var(--card-shadow)" }} className="relative overflow-hidden flex flex-col items-start justify-between gap-4 rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-6 sm:flex-row sm:items-center">
+                <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--butter)] to-transparent" />
                 <div className="flex items-center gap-3">
                   <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--butter-20)] text-[var(--butter)]">
                     <Battery className="h-6 w-6" />
@@ -286,7 +299,8 @@ export default function DashboardPage() {
                 ].map(({ label, value, sub, icon: Icon }) => (
                   <div
                     key={label}
-                    className="flex items-center gap-3 rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 backdrop-blur"
+                    style={{ boxShadow: "var(--card-shadow)" }}
+                    className="flex items-center gap-3 rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5"
                   >
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--butter-20)] text-[var(--butter)]">
                       <Icon className="h-5 w-5" />

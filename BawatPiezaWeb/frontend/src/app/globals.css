@@ -22,6 +22,11 @@
   --tint5: rgba(10, 42, 74, 0.05);
   --tint10: rgba(10, 42, 74, 0.1);
   --tint20: rgba(10, 42, 74, 0.2);
+  /* premium soft card treatment */
+  --card-shadow: 0 2px 6px rgba(10, 42, 74, 0.04), 0 10px 32px rgba(10, 42, 74, 0.07);
+  --card-shadow-lg: 0 4px 12px rgba(10, 42, 74, 0.06), 0 20px 55px rgba(10, 42, 74, 0.12);
+  --card-accent: rgba(246, 196, 69, 0.14);
+  --soft-cyan: rgba(59, 91, 122, 0.14);
 }
 
 .dark {
@@ -46,6 +51,11 @@
   --tint5: rgba(233, 240, 247, 0.06);
   --tint10: rgba(233, 240, 247, 0.12);
   --tint20: rgba(233, 240, 247, 0.2);
+  /* premium soft card treatment */
+  --card-shadow: 0 2px 6px rgba(0, 0, 0, 0.22), 0 12px 34px rgba(0, 0, 0, 0.3);
+  --card-shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.28), 0 24px 60px rgba(0, 0, 0, 0.4);
+  --card-accent: rgba(255, 221, 122, 0.14);
+  --soft-cyan: rgba(59, 91, 122, 0.3);
 }
 
 @theme inline {
@@ -161,5 +171,45 @@ body {
 .bp-fade-in {
   animation: bp-fade-up 0.4s ease both;
 }
+
+/* ---------- SideNav navigation animations ---------- */
+@keyframes bp-nav-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes bp-nav-slide {
+  0% {
+    transform: translateX(0) scaleX(0);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) scaleX(1);
+    opacity: 1;
+  }
+}
+.bp-nav-item {
+  position: relative;
+  overflow: hidden;
+  animation: bp-nav-in 0.35s ease backwards;
+}
+.bp-nav-active-bar {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 65%;
+  width: 3px;
+  border-radius: 9999px;
+  background: var(--butter);
+  transform: translateY(-50%) scaleX(0);
+  transform-origin: left;
+  animation: bp-nav-slide 0.3s ease forwards;
+}
+
 
 

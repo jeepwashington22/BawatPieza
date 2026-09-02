@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, Bell, ChevronDown, User, Settings, LogOut, Gauge } from "lucide-react";
+import { Bell, ChevronDown, User, Settings, LogOut, Gauge } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import { useUser } from "@/context/UserContext";
 import ConfirmationModal from "./ConfirmationModal";
@@ -35,7 +35,11 @@ export default function TopNav({
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const fullName = [user.firstname, user.lastname].filter(Boolean).join(" ") || "Loading...";
+  const firstName = user.firstname || user.email.split("@")[0] || "";
   const initials = [user.firstname, user.lastname].filter(Boolean).map((s) => s[0]?.toUpperCase()).join("") || "?";
+
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -51,8 +55,11 @@ export default function TopNav({
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-[var(--line)] bg-[var(--glass)] px-4 py-3 backdrop-blur-xl sm:px-6">
+      <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-[var(--line)] bg-[var(--background)] px-4 py-3 sm:px-6">
       <div className="min-w-0 flex-1">
+        <p className="truncate text-sm text-[var(--muted)]">
+          {greeting},<span className="font-semibold text-[var(--text)]"> {firstName || "there"}</span> 👋
+        </p>
         <h1 className="truncate text-xl font-bold tracking-tight text-[var(--text)]">{title}</h1>
         {subtitle && (
           <p className="truncate text-sm text-[var(--muted)]">{subtitle}</p>
@@ -60,11 +67,6 @@ export default function TopNav({
       </div>
 
       <div className="flex items-center gap-2.5">
-        <div className="hidden items-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3.5 py-2 text-sm text-[var(--muted)] lg:flex">
-          <Search className="h-4 w-4" />
-          <input placeholder="Search..." className="w-36 bg-transparent text-[var(--text)] placeholder-[var(--faint)] outline-none" />
-        </div>
-
         <ThemeToggle />
 
         {/* Notifications */}
