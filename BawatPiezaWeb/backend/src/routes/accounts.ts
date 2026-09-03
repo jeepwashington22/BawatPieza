@@ -26,6 +26,40 @@ const setPasswordSchema = z.object({
 });
 
 /**
+ * Sends the "set your password" invite email. Shared by POST / (create) and
+ * POST /resend-invite. Returns true on success, false (logged) on failure so
+ * the API can report `verificationEmailSent` without failing the request.
+ */
+async function sendInviteEmail(opts: {
+  email: string;
+  fullName: string;
+  role: string;
+  token: string;
+}): Promise<boolean> {
+  const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:3000';
+  const link = `${frontendUrl}/set-password?token=${opts.token}`;
+  try {
+    await sendMail({
+      to: opts.email,
+      subject: 'Set your BawatPieza password (valid for 5 minutes)',
+      text: `Hi ${opts.fullName},\n\nAn admin created a ${opts.role.toUpperCase()} account for you.\nSet your password within 5 minutes: ${link}\n\nIf you did not expect this, ignore this email.`,
+      html: `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto">
+        <h2 style="color:#0a2a4a">Welcome to BawatPieza</h2>
+        <p>Hi <b>${opts.fullName}</b>, an admin created a <b>${opts.role.toUpperCase()}</b> account for you.</p>
+        <p>Click below to set your password. <b>This link expires in 5 minutes.</b></p>
+        <p><a href="${link}" style="background:#0a2a4a;color:#fff;padding:12px 22px;border-radius:10px;text-decoration:none">Set my password</a></p>
+        <p style="color:#666;font-size:12px">If the button does not work, paste this link: ${link}</p>
+      </div>`,
+    });
+    console.log(`[accounts] Verification email sent to ${opts.email}`);
+    return true;
+  } catch (mailErr) {
+    console.error('[accounts] verification email failed:', (mailErr as Error).message);
+    return false;
+  }
+}
+
+/**
  * POST /accounts
  * Admin-only. Creates a pending account (no password) and emails a
  * verification link that expires in 5 minutes. Only the recipient
@@ -90,28 +124,7 @@ router.post('/', requireAuth, requireAdmin, async (req, res, next) => {
     const token = randomBytes(32).toString('hex');
     await redis.set(`invite:${token}`, JSON.stringify({ email, fullName, role, userId: created.user?.id }), 'EX', INVITE_TTL_SECONDS);
 
-    const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:3001';
-    const link = `${frontendUrl}/set-password?token=${token}`;
-
-    let emailSent = false;
-    try {
-      await sendMail({
-        to: email,
-        subject: 'Set your BawatPieza password (valid for 5 minutes)',
-        text: `Hi ${fullName},\n\nAn admin created a ${role.toUpperCase()} account for you.\nSet your password within 5 minutes: ${link}\n\nIf you did not expect this, ignore this email.`,
-        html: `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto">
-          <h2 style="color:#0a2a4a">Welcome to BawatPieza</h2>
-          <p>Hi <b>${fullName}</b>, an admin created a <b>${role.toUpperCase()}</b> account for you.</p>
-          <p>Click below to set your password. <b>This link expires in 5 minutes.</b></p>
-          <p><a href="${link}" style="background:#0a2a4a;color:#fff;padding:12px 22px;border-radius:10px;text-decoration:none">Set my password</a></p>
-          <p style="color:#666;font-size:12px">If the button does not work, paste this link: ${link}</p>
-        </div>`,
-      });
-      emailSent = true;
-      console.log(`[accounts] Verification email sent to ${email}`);
-    } catch (mailErr) {
-      console.error('[accounts] verification email failed:', (mailErr as Error).message);
-    }
+    const emailSent = await sendInviteEmail({ email, fullName, role, token });
 
     res.status(201).json({
       ok: true,
@@ -171,6 +184,60 @@ router.post('/set-password', async (req, res, next) => {
     }
 
     res.json({ ok: true, message: 'Password set. You can now sign in.' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * POST /accounts/resend-invite
+ * Admin-only. Re-issues a fresh 5-minute invite token for a pending account
+ * and re-sends the verification email. Use when the original email failed,
+ * landed in spam, or the 5-minute window expired before the password was set.
+ */
+const resendSchema = z.object({ email: z.string().email() });
+
+router.post('/resend-invite', requireAuth, requireAdmin, async (req, res, next) => {
+  try {
+    const parsed = resendSchema.safeParse(req.body);
+    if (!parsed.success) {
+      throw createHttpError(400, 'A valid email is required.');
+    }
+    const { email } = parsed.data;
+
+    // Look up the pending account row.
+    const { data: row, error: rowErr } = await supabase
+      .from('user_accounts')
+      .select('id, firstname, lastname, role, status, email')
+      .eq('email', email)
+      .maybeSingle();
+    if (rowErr) throw createHttpError(500, rowErr.message);
+    if (!row) throw createHttpError(404, `No account found for ${email}.`);
+    if (row.status === 'active') {
+      throw createHttpError(409, `${email} is already active. No invite needed.`);
+    }
+
+    const fullName = [row.firstname, row.lastname].filter(Boolean).join(' ') || email;
+
+    // Fresh one-time token (invalidates nothing — old tokens simply expire).
+    const token = randomBytes(32).toString('hex');
+    await redis.set(
+      `invite:${token}`,
+      JSON.stringify({ email, fullName, role: row.role, userId: row.id }),
+      'EX',
+      INVITE_TTL_SECONDS,
+    );
+
+    const emailSent = await sendInviteEmail({ email, fullName, role: row.role, token });
+
+    res.json({
+      ok: true,
+      email,
+      verificationEmailSent: emailSent,
+      message: emailSent
+        ? `A new verification email was sent to ${email}. It expires in ${INVITE_TTL_SECONDS / 60} minutes.`
+        : `Could not send the verification email to ${email}. Check the Brevo configuration and backend logs.`,
+    });
   } catch (err) {
     next(err);
   }

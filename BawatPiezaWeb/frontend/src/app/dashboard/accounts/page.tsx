@@ -187,6 +187,34 @@ export default function AccountsPage() {
     }
   };
 
+  const resendInvite = async (rawEmail: string | null) => {
+    if (!rawEmail) return;
+    const email = rawEmail;
+    setSaveStatus("saving");
+    setSaveMessage(`Re-sending verification email to ${email}...`);
+    try {
+      const { supabase } = await import("@/lib/supabaseClient");
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      const res = await fetch(`${API_URL}/accounts/resend-invite`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ email }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error?.message ?? json?.message ?? "Failed to resend invite");
+      const sent = Boolean(json?.verificationEmailSent);
+      setSaveStatus(sent ? "success" : "error");
+      setSaveMessage(json?.message ?? (sent ? "Verification email re-sent." : "Could not send the email."));
+    } catch (err) {
+      setSaveStatus("error");
+      setSaveMessage((err as Error).message);
+    }
+  };
+
   const toggleStatus = (id: string, next: "active" | "suspended") =>
     setAccounts((prev) => prev.map((a) => (a.id === id ? { ...a, status: next, is_active: next === "active" } : a)));
 
@@ -349,6 +377,16 @@ export default function AccountsPage() {
                           </td>
                           <td className="px-5 py-4">
                             <div className="flex items-center justify-end gap-1.5">
+                              {a.status === "pending" && (
+                                <button
+                                  type="button"
+                                  title="Resend verification email"
+                                  onClick={() => resendInvite(a.email)}
+                                  className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted)] transition hover:bg-[var(--butter-20)] hover:text-[var(--prussian)]"
+                                >
+                                  <Mail className="h-4 w-4" />
+                                </button>
+                              )}
                               <button
                                 type="button"
                                 title="Delete"
