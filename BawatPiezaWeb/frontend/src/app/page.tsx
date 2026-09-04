@@ -135,6 +135,7 @@ export default function LandingPage() {
               </label>
               <button
                 type="button"
+                onClick={() => (window.location.href = "/forgot-password")}
                 className="text-xs font-medium text-[var(--butter)] hover:text-[var(--text)]"
               >
                 Forgot password?

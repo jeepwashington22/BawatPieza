@@ -57,8 +57,8 @@ export default function TopNav({
     <>
       <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-[var(--line)] bg-[var(--background)] px-4 py-3 sm:px-6">
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm text-[var(--muted)]">
-          {greeting},<span className="font-semibold text-[var(--text)]"> {firstName || "there"}</span> 👋
+        <p className="truncate text-sm  text-[var(--muted)]">
+          {greeting},<span className="font-semibold text-[var(--text)]"> {firstName || "there"}</span> 
         </p>
         <h1 className="truncate text-xl font-bold tracking-tight text-[var(--text)]">{title}</h1>
         {subtitle && (
