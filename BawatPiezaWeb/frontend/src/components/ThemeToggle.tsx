@@ -5,11 +5,13 @@ import { Moon, Sun } from "lucide-react";
 
 export default function ThemeToggle() {
   const [dark, setDark] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    setDark(document.documentElement.classList.contains("dark"));
+    const frame = requestAnimationFrame(() => {
+      setDark(document.documentElement.classList.contains("dark"));
+    });
+
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   const toggle = () => {
@@ -27,18 +29,17 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
+      aria-pressed={dark}
       aria-label="Toggle dark mode"
-      className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--surface)] text-[var(--soft)] transition hover:text-[var(--text)]"
+      title={dark ? "Switch to light mode" : "Switch to dark mode"}
+      data-dark={dark}
+      className="theme-toggle relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-[var(--line-strong)] bg-[var(--tint10)] text-[var(--soft)] shadow-sm backdrop-blur-sm transition-colors duration-300 hover:text-[var(--text)]"
     >
       <Sun
-        className={`h-5 w-5 absolute transition-all duration-500 ${
-          mounted && dark ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"
-        }`}
+        className="theme-toggle-sun absolute h-5 w-5"
       />
       <Moon
-        className={`h-5 w-5 absolute transition-all duration-500 ${
-          mounted && dark ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"
-        }`}
+        className="theme-toggle-moon absolute h-5 w-5"
       />
     </button>
   );
