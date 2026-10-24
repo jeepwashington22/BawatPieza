@@ -42,6 +42,235 @@
   min-height: calc(100dvh - 6.25rem);
 }
 
+.how-section {
+  isolation: isolate;
+  background: #26384b;
+}
+
+.how-section-video,
+.how-section-wash {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.how-section-video {
+  z-index: -2;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(0.86) contrast(1.04) brightness(0.94);
+  mix-blend-mode: screen;
+  opacity: 0.82;
+}
+
+.how-section-wash {
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(10, 22, 38, 0.58) 0%, rgba(10, 22, 38, 0.28) 46%, rgba(10, 22, 38, 0.46) 100%),
+    linear-gradient(135deg, rgba(255, 140, 40, 0.1), transparent 52%);
+}
+
+.how-section-copy p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.how-section-readout {
+  max-width: 42rem;
+  justify-self: end;
+  width: 100%;
+}
+
+.how-section-readout .metric-glass {
+  display: block;
+  min-height: 7.5rem;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 0;
+  background: transparent;
+  padding: 1rem 1rem 1rem 0;
+  box-shadow: none;
+}
+
+.how-section-readout .metric-glass:nth-child(2) {
+  padding-left: 1rem;
+}
+
+.how-section-readout .metric-glass:nth-child(3) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.how-section-readout .metric-icon {
+  display: none;
+}
+
+.how-section-readout .metric-glass p:first-of-type {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.58rem;
+}
+
+.how-section-readout .metric-glass p:last-child {
+  margin-top: 0.45rem;
+  color: #ffffff;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 0.95;
+}
+
+.how-section-readout .metric-glass p:last-child span {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.72rem;
+}
+
+.generation-section {
+  isolation: isolate;
+  min-height: 34rem;
+  background: #26384b;
+}
+
+.generation-highlight {
+  background: linear-gradient(100deg, #ffcf70, #ff8c28 55%, #ff5c35);
+  background-clip: text;
+  color: transparent;
+}
+
+.generation-copy,
+.generation-stats {
+  transform: translateY(1rem);
+  opacity: 0;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), opacity 700ms ease;
+}
+
+.generation-section.is-active .generation-copy,
+.generation-section.is-active .generation-stats {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.generation-stats {
+  max-width: 52rem;
+  justify-self: end;
+  width: 100%;
+}
+
+.generation-stats-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.34);
+  padding-bottom: 1rem;
+}
+
+.generation-metrics .metric-glass {
+  display: block;
+  min-height: 9rem;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 0;
+  background: transparent;
+  padding: 1.25rem 1rem 1.25rem 0;
+  box-shadow: none;
+}
+
+.generation-metrics .metric-glass + .metric-glass {
+  border-left: 1px solid rgba(255, 255, 255, 0.28);
+  padding-left: 1rem;
+}
+
+.generation-metrics .metric-icon {
+  display: none;
+}
+
+.generation-metrics .metric-glass p:first-of-type {
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 0.58rem;
+}
+
+.generation-metrics .metric-glass p:last-child {
+  margin-top: 0.7rem;
+  color: #ffffff;
+  font-size: clamp(2.25rem, 5vw, 4.5rem);
+  line-height: 0.92;
+}
+
+.generation-metrics .metric-glass p:last-child span {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.72rem;
+}
+
+.generation-live-dot {
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 999px;
+  background: var(--neon-orange);
+  box-shadow: 0 0 0 0 rgba(255, 140, 40, 0.7);
+}
+
+.generation-section.is-active .generation-live-dot {
+  animation: generation-live-pulse 1.8s ease-out infinite;
+}
+
+@keyframes generation-live-pulse {
+  70% { box-shadow: 0 0 0 0.55rem rgba(255, 140, 40, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 140, 40, 0); }
+}
+
+.how-it-works-section {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 177, 92, 0.08));
+}
+
+.how-tile-panel {
+  align-self: start;
+}
+
+.how-tile-visual {
+  isolation: isolate;
+  perspective: 900px;
+}
+
+.how-tile-visual .tile-stage {
+  transform: rotateX(58deg) rotateZ(-35deg);
+  transform-style: preserve-3d;
+}
+
+.how-tile-caption {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  color: var(--faint);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.how-content {
+  min-width: 0;
+}
+
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.how-step-wrap {
+  position: relative;
+}
+
+.how-step-arrow {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .how-steps {
+    grid-template-columns: 1fr;
+    padding-top: 1.5rem;
+  }
+}
+
 .spotlight-grid {
   opacity: 0.78;
   background-image: linear-gradient(to right, rgba(136, 91, 34, 0.18) 1px, transparent 1px), linear-gradient(to bottom, rgba(136, 91, 34, 0.18) 1px, transparent 1px);

@@ -9,6 +9,7 @@ type AnimatedMetricProps = {
   suffix?: string;
   icon: React.ReactNode;
   accent?: "butter" | "cyan";
+  start?: boolean;
 };
 
 export default function AnimatedMetric({
@@ -18,10 +19,15 @@ export default function AnimatedMetric({
   suffix = "",
   icon,
   accent = "butter",
+  start = true,
 }: AnimatedMetricProps) {
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
+    if (!start) {
+      return;
+    }
+
     let frameId = 0;
     const startedAt = performance.now();
     const duration = 1400;
@@ -35,7 +41,7 @@ export default function AnimatedMetric({
 
     frameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frameId);
-  }, [value]);
+  }, [start, value]);
 
   const formattedValue = displayValue.toLocaleString(undefined, {
     minimumFractionDigits: decimals,

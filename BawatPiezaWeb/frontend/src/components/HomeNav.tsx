@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 const NAV_ITEMS = [
   { label: "Overview", href: "#home" },
-  { label: "How it works", href: "#about" },
+  { label: "How it works", href: "#how" },
   { label: "About", href: "#about" },
   { label: "Features", href: "#about" },
   { label: "Contact", href: "mailto:hello@bawatpieza.com" },
