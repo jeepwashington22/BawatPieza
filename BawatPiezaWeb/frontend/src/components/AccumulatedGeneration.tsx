@@ -1,12 +1,22 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Activity, Footprints, Gauge, Zap } from "lucide-react";
+import { Activity, ChevronDown, Footprints, Gauge, Zap } from "lucide-react";
 import AnimatedMetric from "@/components/AnimatedMetric";
+
+const DAY_OPTIONS = [7, 14, 30, 90];
+
+const consumptionMap: Record<number, { footsteps: number; generation: number; voltage: number }> = {
+  7: { footsteps: 1248, generation: 42.8, voltage: 4.86 },
+  14: { footsteps: 2560, generation: 88.1, voltage: 8.42 },
+  30: { footsteps: 5384, generation: 174.6, voltage: 12.8 },
+  90: { footsteps: 16240, generation: 536.2, voltage: 24.1 },
+};
 
 export default function AccumulatedGeneration() {
   const sectionRef = useRef<HTMLElement>(null);
   const [isActive, setIsActive] = useState(false);
+  const [days, setDays] = useState(7);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -20,6 +30,8 @@ export default function AccumulatedGeneration() {
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
+
+  const consumption = consumptionMap[days] ?? consumptionMap[7];
 
   return (
     <section
@@ -50,16 +62,55 @@ export default function AccumulatedGeneration() {
         </div>
 
         <div className="generation-stats">
-          <div className="generation-stats-heading">
+          <div className="generation-stats-heading flex-wrap gap-3">
             <span className="flex items-center gap-2 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-white/75">
               <Activity className="h-3.5 w-3.5 text-[var(--neon-orange)]" /> Current output
             </span>
+
+            <label className="relative inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-2.5 py-1.5 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-white/80 shadow-[0_10px_30px_-20px_rgba(0,0,0,0.7)]">
+              <span className="text-white/70">Days</span>
+              <select
+                aria-label="Filter by days of consumption"
+                value={days}
+                onChange={(event) => setDays(Number(event.target.value))}
+                className="appearance-none bg-transparent pr-5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[var(--neon-orange)] outline-none"
+              >
+                {DAY_OPTIONS.map((option) => (
+                  <option key={option} value={option} className="bg-slate-900 text-white">
+                    {option} days
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-2 h-3 w-3 text-white/70" />
+            </label>
+
             <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-emerald-300">Active system</span>
           </div>
-          <div key={isActive ? "active" : "inactive"} className="generation-metrics grid grid-cols-1 sm:grid-cols-3">
-            <AnimatedMetric start={isActive} label="Footstep count" value={1248} suffix="steps" icon={<Footprints className="h-4 w-4" />} />
-            <AnimatedMetric start={isActive} label="Electricity generation" value={42.8} decimals={1} suffix="W" icon={<Zap className="h-4 w-4" />} />
-            <AnimatedMetric start={isActive} label="Voltage" value={4.86} decimals={2} suffix="V" icon={<Gauge className="h-4 w-4" />} accent="cyan" />
+          <div key={`${isActive}-${days}`} className="generation-metrics grid grid-cols-1 sm:grid-cols-3">
+            <AnimatedMetric
+              start={isActive}
+              label="Footstep count"
+              value={consumption.footsteps}
+              suffix="steps"
+              icon={<Footprints className="h-4 w-4" />}
+            />
+            <AnimatedMetric
+              start={isActive}
+              label="Electricity generation"
+              value={consumption.generation}
+              decimals={1}
+              suffix="W"
+              icon={<Zap className="h-4 w-4" />}
+            />
+            <AnimatedMetric
+              start={isActive}
+              label="Voltage"
+              value={consumption.voltage}
+              decimals={2}
+              suffix="V"
+              icon={<Gauge className="h-4 w-4" />}
+              accent="cyan"
+            />
           </div>
         </div>
       </div>
