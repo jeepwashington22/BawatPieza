@@ -10,8 +10,7 @@ import {
 } from "lucide-react";
 import SmartPreloader from "@/components/ui/smart-preloader";
 import AccumulatedGeneration from "@/components/AccumulatedGeneration";
-import HomeNav from "@/components/HomeNav";
-import ShapeGrid from "@/components/shape-grid";
+import HeroTileScroll from "@/components/HeroTileScroll";
 import Footer from "@/components/Footer";
 import Faqs01 from "@/components/ui/faqs-01";
 
@@ -165,56 +164,10 @@ export default function LandingPage() {
         fadeMs={1000}
       />
 
-      <HomeNav />
-
-      {/* ================= HERO ================= */}
-      <section
-        id="about"
-        className="hero-section relative flex h-full min-h-[100dvh] items-center overflow-hidden px-4 pb-14 pt-20 sm:px-6 lg:px-8 lg:pt-16"
-      >
-        <ShapeGrid
-          shape="square"
-          direction="diagonal"
-          lineColor="#d7dee9"
-          hoverColor="#f6c445"
-          hoverFillColor="#f6c445"
-          fillOpacity={0.18}
-          cellSize={38}
-          speed={0.55}
-          radius={1.2}
-          glow={0.28}
-          opacity={0.9}
-          backgroundColor="transparent"
-          className="pointer-events-none absolute inset-0 z-0 h-full w-full"
-        />
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.7),transparent_48%)]" />
-
-        <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center justify-center text-center">
-          <h1 className="mt-6 max-w-4xl text-5xl font-extrabold leading-[0.98] tracking-tight sm:text-6xl xl:text-[4.2rem]">
-            Every step leaves a little <span className={GRADIENT_TEXT}>power behind.</span>
-          </h1>
-
-          <p className="mt-6 max-w-xl text-sm leading-relaxed text-[var(--muted)] sm:text-base">
-            BawatPieza turns everyday pressure into measurable, usable energy through a tile made
-            for the way people already move.
-          </p>
-
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href="#generation"
-              className="group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-[#ff9a3c] to-[#ea580c] px-6 py-3 text-sm font-bold text-white shadow-[0_12px_28px_-8px_rgba(234,88,12,0.6)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_34px_-8px_rgba(234,88,12,0.7)]"
-            >
-              Explore the tile <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-            </a>
-            <a
-              href="#how"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line-strong)] bg-white/50 px-6 py-3 text-sm font-semibold text-[var(--text)] backdrop-blur transition hover:-translate-y-0.5 hover:bg-white"
-            >
-              See how it works
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* ================= HERO =================
+          Pinned scroll runway: tiles.svg tilts in 3D, then opens into the
+          scroll-scrubbed BawatPieza video. All logic lives in HeroTileScroll. */}
+      <HeroTileScroll />
 
       {/* ================= ACCUMULATED GENERATION ================= */}
       <AccumulatedGeneration />
