@@ -58,9 +58,6 @@ section[id] {
 .hero-section {
   min-height: calc(100dvh - 4rem);
   background: linear-gradient(135deg, #b92713 0%, #e5481d 52%, #ff7a21 100%);
-}
-
-.hero-section {
   isolation: isolate;
 }
 
@@ -101,6 +98,43 @@ section[id] {
   width: 100%;
   display: block;
   text-align: center;
+}
+
+.textmark-shine {
+  color: transparent;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 247, 237, 0.18) 0%,
+    rgba(255, 247, 237, 0.18) 32%,
+    rgba(255, 177, 92, 0.72) 43%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(255, 140, 40, 0.7) 58%,
+    rgba(255, 247, 237, 0.18) 72%,
+    rgba(255, 247, 237, 0.18) 100%
+  );
+  background-size: 220% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: textmark-shine 5s ease-in-out infinite;
+}
+
+@keyframes textmark-shine {
+  0%,
+  25% {
+    background-position: 180% 0;
+  }
+
+  65%,
+  100% {
+    background-position: -20% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .textmark-shine {
+    animation: none;
+    background-position: 50% 0;
+  }
 }
 
 .hero-technology {
@@ -216,7 +250,7 @@ section[id] {
   top: 50%;
   width: 0;
   height: 0;
-  opacity: 0; /* revealed by JS after first placement, so there is no jump */
+  opacity: 0;
   transform-style: preserve-3d;
   will-change: transform;
 }
@@ -294,7 +328,6 @@ section[id] {
   background-image: var(--i-side, none);
 }
 
-/* thin bevel catch-light on every box edge */
 .t3-front {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 1px 0 0 rgba(255, 255, 255, 0.07);
 }
@@ -307,7 +340,6 @@ section[id] {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
-/* brushed-metal sheen on round parts */
 .t3-cyl {
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 42%, rgba(0, 0, 0, 0.28));
 }
@@ -316,7 +348,6 @@ section[id] {
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
 }
 
-/* crossed planes for rods + springs must show both sides */
 .t3-two {
   backface-visibility: visible;
 }
@@ -341,7 +372,6 @@ section[id] {
   background: radial-gradient(closest-side, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.5) 62%, transparent 100%);
 }
 
-/* materials */
 .m-shell {
   --c-top: #4a4f59;
   --c-front: #1b1e24;
@@ -382,7 +412,6 @@ section[id] {
   --c-side: #353a41;
 }
 
-/* PIEZO / DYNAMO callouts */
 .t3-labels {
   position: absolute;
   inset: 0;
@@ -440,14 +469,13 @@ section[id] {
   letter-spacing: 0.02em;
 }
 
-/* PIEZO / DYNAMO background wordmarks (behind the tile, same style as .hero-wordmarks) */
 .t3-bgwords {
   position: absolute;
   inset: 0;
-  z-index: 2; /* above the BAWATPIEZA mark (1), below the tile (3) */
+  z-index: 2;
   overflow: hidden;
   pointer-events: none;
-  opacity: 0; /* driven from JS */
+  opacity: 0;
   user-select: none;
 }
 
@@ -474,20 +502,18 @@ section[id] {
   top: 52%;
 }
 
-/* circle reveal (clip-path is set from JS) */
 .t3-iris,
 .t3-iris-ring,
 .nav-reveal {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  visibility: hidden; /* shown by JS once the footprint exists */
+  visibility: hidden;
   will-change: mask-size, mask-position;
 }
 
-/* top bar paints through the same footprint (see HomeNav) */
 .nav-reveal {
-  background: #26384b; /* keep in sync with REVEAL_BG */
+  background: #26384b;
 }
 
 .t3-iris-ring {
@@ -500,7 +526,6 @@ section[id] {
   overflow: hidden;
 }
 
-/* the next section fills the circle exactly, and is fully shown as the circle opens */
 .t3-iris > * {
   height: 100%;
   min-height: 0;
@@ -517,7 +542,6 @@ section[id] {
   animation: generation-live-pulse 1.8s ease-out infinite;
 }
 
-/* narrow screens: keep each label inside the screen, text running back toward the tile */
 .t3-labels.is-compact .t3-label-r .t3-label-in {
   left: auto;
   right: 0;
@@ -534,9 +558,6 @@ section[id] {
   .t3-label-in span {
     display: none;
   }
-}
-
-@media (max-width: 640px) {
   .t3-stage {
     perspective: 2800px;
   }
@@ -546,7 +567,6 @@ section[id] {
   .hero-runway {
     height: auto;
   }
-
   .hero-pin {
     position: relative;
   }
@@ -673,9 +693,6 @@ section[id] {
   inset: 0;
   height: 100%;
   width: 100%;
-}
-
-.hero-section-wash {
   z-index: 0;
   background: transparent;
 }
@@ -987,10 +1004,6 @@ section[id] {
   transition: color 350ms ease, filter 350ms ease, transform 350ms ease;
 }
 
-.how-progress-footstep::before {
-  display: none;
-}
-
 .how-progress-footstep svg {
   width: 1.35rem;
   height: 1.35rem;
@@ -1034,10 +1047,6 @@ section[id] {
 .how-showcase-readout strong {
   font-size: 1.15rem;
   line-height: 1.1;
-}
-
-.how-content {
-  min-width: 0;
 }
 
 .reveal-on-scroll {
@@ -1096,26 +1105,19 @@ section[id] {
   }
 }
 
-.how-step-arrow {
-  display: none;
-}
-
 @media (max-width: 1023px) {
   .how-steps {
     grid-template-columns: 1fr;
     padding-top: 1.5rem;
   }
-
   .how-step-wrap {
     min-height: 0;
     padding: 1.5rem 0;
   }
-
   .how-showcase-readout {
     bottom: 1rem;
     left: 1rem;
   }
-
   .how-progress {
     position: relative;
     top: auto;
@@ -1130,12 +1132,10 @@ section[id] {
     width: auto;
     gap: 0.4rem;
   }
-
   .how-progress-footstep {
     width: 1.15rem;
     height: 1.15rem;
   }
-
   .how-progress-footstep::before {
     width: 1.15rem;
     height: 1.15rem;
@@ -1183,22 +1183,12 @@ section[id] {
   --color-butter: var(--butter);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-/* Cell ripple animation for the hero BackgroundRippleEffect (acertinity-style) */
-@theme inline {
   --animate-cell-ripple: cell-ripple var(--duration, 200ms) ease-out none 1 var(--delay, 0ms);
 
   @keyframes cell-ripple {
-    0% {
-      opacity: 0.4;
-    }
-    50% {
-      opacity: 0.8;
-    }
-    100% {
-      opacity: 0.4;
-    }
+    0% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.4; }
   }
 }
 
@@ -1257,7 +1247,6 @@ body {
   animation: preloader-message-glide 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Neon glow pulse for high-energy tiles */
 @keyframes neon-pulse {
   0%, 100% { opacity: 0.7; filter: brightness(1); }
   50% { opacity: 1; filter: brightness(1.3); }
@@ -1266,7 +1255,6 @@ body {
   animation: neon-pulse 2s ease-in-out infinite;
 }
 
-/* Ripple effect for step impact */
 @keyframes ripple {
   0% { transform: scale(0.8); opacity: 0.8; }
   100% { transform: scale(2.5); opacity: 0; }
@@ -1275,21 +1263,13 @@ body {
   animation: ripple 0.9s ease-out forwards;
 }
 
-/* Fade-in-up on scroll */
 @keyframes fade-up {
-  from { opacity: 0; transform: translate Y(20px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .fade-up {
   animation: fade-up 0.6s ease both;
 }
-
-/* Glow shadow utilities */
-.glow-cyan { box-shadow: 0 0 20px rgba(0, 229, 255, 0.4), 0 0 40px rgba(0, 229, 255, 0.2); }
-.glow-lime { box-shadow: 0 0 20px rgba(163, 230, 53, 0.4), 0 0 40px rgba(163, 230, 53, 0.2); }
-.glow-yellow { box-shadow: 0 0 20px rgba(250, 204, 21, 0.4), 0 0 40px rgba(250, 204, 21, 0.2); }
-.glow-orange { box-shadow: 0 0 20px rgba(255, 140, 40, 0.4), 0 0 40px rgba(255, 140, 40, 0.2); }
-.glow-orange-strong { box-shadow: 0 0 28px rgba(255, 140, 40, 0.65), 0 0 64px rgba(255, 140, 40, 0.28); }
 
 .tile-stage {
   position: relative;
@@ -1313,7 +1293,6 @@ body {
 .tile-surface::after {
   display: none;
 }
-
 
 .tile-grid {
   position: absolute;
@@ -1373,12 +1352,8 @@ body {
 }
 
 @keyframes faq-float {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(-18px, 22px, 0) scale(1.12);
-  }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-18px, 22px, 0) scale(1.12); }
 }
 
 .faq-orb {
@@ -1386,14 +1361,8 @@ body {
 }
 
 @keyframes contact-orbit {
-  0%, 100% {
-    transform: rotate(0deg) scale(1);
-    opacity: 0.55;
-  }
-  50% {
-    transform: rotate(3deg) scale(1.025);
-    opacity: 1;
-  }
+  0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.55; }
+  50% { transform: rotate(3deg) scale(1.025); opacity: 1; }
 }
 
 .contact-orbit {
@@ -1401,14 +1370,8 @@ body {
 }
 
 @keyframes faq-answer-fade {
-  from {
-    opacity: 0;
-    transform: translateY(-0.4rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-0.4rem); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .faq-answer-fade {
@@ -1434,83 +1397,119 @@ body {
 .tile-orbit-one { height: 78%; width: 65%; }
 .tile-orbit-two { height: 60%; width: 90%; border-color: rgba(255, 145, 63, 0.23); transform: rotate(-35deg); }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-/* ============================================================
-   HOW IT WORKS: plays by itself when scrolled into view.
-   Driven by HowItWorks.tsx. Red-orange, same family as the hero.
-   ============================================================ */
 .hw-section {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
   min-height: max(100dvh, 40rem);
-  padding: 5rem 0;
+  padding: 6rem 0 0;
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(55% 70% at 75% 56%, rgba(255, 196, 110, 0.32), transparent 72%),
+    radial-gradient(55% 70% at 50% 52%, rgba(255, 196, 110, 0.32), transparent 72%),
     linear-gradient(135deg, #b92713 0%, #e5481d 52%, #ff7a21 100%);
-}
-
-.hw-copy {
-  position: relative;
-  z-index: 5;
-  width: min(48%, 42rem);
-  margin-left: clamp(1.25rem, 5vw, 4rem);
   color: #fff;
 }
 
-/* everything waits hidden until the tile has landed (.is-in is added by JS) */
-/* hidden state = also the way OUT: steps leave last-to-first, quickly */
-.hw-head,
-.hw-card {
+.hw-wordmark {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: min(94vw, 104rem);
+  color: rgba(255, 224, 193, 0.16);
+  font-size: clamp(6rem, 14vw, 16rem);
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 0.8;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
   opacity: 0;
-  transform: translate3d(-36px, 0, 0);
-  transition: opacity 380ms ease, transform 480ms ease;
+  transform: translate(-50%, -50%);
+  transition: opacity 600ms ease;
 }
 
-.hw-card {
-  transition-delay: calc(var(--r, 0) * 70ms);
+.hw-wordmark span {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.hw-section.is-play .hw-wordmark {
+  opacity: 1;
+}
+
+.hw-head,
+.hw-steps {
+  position: relative;
+  z-index: 5;
 }
 
 .hw-head {
-  transition-delay: 280ms;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 100%;
+  padding: 0 clamp(1.25rem, 5vw, 4rem);
+  text-align: left;
 }
 
-/* visible state = the way IN: heading first, then the steps one by one */
+.hw-head-l {
+  display: grid;
+  justify-items: start;
+  max-width: 34rem;
+}
+
+.hw-head,
+.hw-steps {
+  opacity: 0;
+  transition: opacity 380ms ease, transform 480ms ease;
+}
+
+.hw-head {
+  transform: translate3d(0, -18px, 0);
+  transition-delay: 120ms;
+}
+
+.hw-steps {
+  transform: translate3d(0, 28px, 0);
+}
+
 .hw-section.is-in .hw-head,
-.hw-section.is-in .hw-card {
+.hw-section.is-in .hw-steps {
   opacity: 1;
   transform: none;
   transition: opacity 700ms ease, transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.hw-section.is-in .hw-head {
-  transition-delay: 0ms;
-}
-
-.hw-section.is-in .hw-card {
-  transition-delay: calc(var(--i, 0) * 130ms + 250ms);
+.hw-section.is-in .hw-steps {
+  transition-delay: 200ms;
 }
 
 .hw-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.55rem;
   color: #fff3d6;
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   font-weight: 800;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
 .hw-eyebrow::before {
-  width: 1.5rem;
+  width: 1.1rem;
   height: 2px;
   border-radius: 2px;
   background: currentColor;
@@ -1518,12 +1517,12 @@ body {
 }
 
 .hw-title {
-  margin: 1rem 0 0;
+  margin: 0.6rem 0 0;
   color: #fff;
-  font-size: clamp(2rem, 3.4vw + 0.6rem, 3.4rem);
+  font-size: clamp(1.7rem, 2.4vw + 0.9rem, 3.2rem);
   font-weight: 800;
-  line-height: 1.04;
-  letter-spacing: -0.03em;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
 }
 
 .hw-title-accent {
@@ -1534,33 +1533,33 @@ body {
 }
 
 .hw-lead {
-  max-width: 32rem;
-  margin: 1rem 0 0;
-  color: rgba(255, 255, 255, 0.84);
-  font-size: 0.95rem;
-  line-height: 1.6;
+  max-width: 22rem;
+  margin: 1.4rem 0 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.9rem;
+  line-height: 1.55;
 }
 
 .hw-steps {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.38);
+  background: linear-gradient(180deg, rgba(255, 176, 104, 0.3), rgba(240, 84, 36, 0.42));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
 }
 
 .hw-card {
   position: relative;
-  overflow: hidden;
-  padding: 1.25rem 1.3rem 1.35rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 1.25rem;
-  background: rgba(0, 0, 0, 0.4);
-  color: #ffffff;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    0 22px 44px -28px rgba(0, 0, 0, 0.78);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  padding: 1.6rem clamp(1.25rem, 2.4vw, 2.5rem) 2rem;
+  color: #fff;
+}
+
+.hw-card + .hw-card {
+  border-left: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 .hw-card-top {
@@ -1571,78 +1570,83 @@ body {
 
 .hw-card-icon {
   display: grid;
-  width: 2.1rem;
-  height: 2.1rem;
+  width: 2rem;
+  height: 2rem;
   place-items: center;
   border-radius: 0.6rem;
-  background: rgba(255, 140, 40, 0.15);
-  color: #ea580c;
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
 }
 
 .hw-card-icon svg {
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 1.05rem;
+  height: 1.05rem;
 }
 
 .hw-card-n {
-  color: #ea580c;
+  color: #ffd9a8;
   font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.1em;
 }
 
 .hw-card h3 {
-  margin: 1rem 0 0;
-  color: #ffffff;
-  font-size: 1.1rem;
+  margin: 0.9rem 0 0;
+  color: #fff;
+  font-size: 1rem;
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.015em;
 }
 
 .hw-card p {
-  margin: 0.45rem 0 0;
+  margin: 0.4rem 0 0;
   color: rgba(255, 255, 255, 0.76);
-  font-size: 0.875rem;
+  font-size: 0.82rem;
   line-height: 1.5;
 }
 
-/* narrow screens: the tile lands in the space above, the text follows below it */
+@media (max-width: 1279px) and (min-width: 1024px) {
+  .hw-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .hw-card:nth-child(3) {
+    border-left: 0;
+  }
+  .hw-card:nth-child(n + 3) {
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+  }
+}
+
 @media (max-width: 1023px) {
   .hw-section {
-    display: block;
+    display: flex;
+    justify-content: flex-start;
     min-height: 0;
-    padding: min(85%, 440px) 0 3.5rem; /* top space = where the tile lands (HowItWorks.tsx) */
+    padding: min(85vw, 440px) 0 0;
+    gap: 1.75rem;
   }
-
-  .hw-copy {
-    width: auto;
-    margin: 0 clamp(1rem, 5vw, 2rem);
+  .hw-wordmark {
+    top: calc(min(85vw, 440px) / 2);
+    font-size: clamp(3rem, 15vw, 6rem);
   }
-
-  .hw-title {
-    font-size: clamp(1.8rem, 7vw, 2.6rem);
+  .hw-head {
+    flex-direction: column;
+    gap: 0;
   }
-
+  .hw-lead {
+    margin-top: 0.8rem;
+  }
   .hw-steps {
     grid-template-columns: 1fr;
-    margin-top: 1.5rem;
+  }
+  .hw-card + .hw-card {
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hw-head,
-  .hw-card {
-    transition: none;
-  }
-}
-
-
-/* ============================================================
-   What's inside one tile. Driven by WhatsInsideScroll.tsx
-   (reuses the .t3-* tile classes from the hero)
-   ============================================================ */
 .wi-runway {
   position: relative;
   height: 560vh;
@@ -1657,7 +1661,7 @@ body {
 }
 
 .wi-stage .t3-shadow {
-  opacity: 0.5; /* the hero's shadow is tuned for red; soften it on the light background */
+  opacity: 0.5;
 }
 
 .wi-trail {
@@ -1670,7 +1674,6 @@ body {
   pointer-events: none;
 }
 
-/* dims everything except the lit part */
 .wi-veil {
   position: absolute;
   inset: 0;
@@ -1746,7 +1749,6 @@ body {
   font-size: 0.62rem;
 }
 
-/* left panel */
 .wi-panel-wrap {
   position: absolute;
   inset: 0;
@@ -1817,14 +1819,8 @@ body {
 }
 
 @keyframes wi-card-in {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 14px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to { opacity: 1; transform: none; }
 }
 
 .wi-kicker {
@@ -1895,49 +1891,19 @@ body {
 }
 
 @media (min-width: 640px) {
-  .wi-panel-wrap {
-    padding: 0 1.5rem;
-  }
+  .wi-panel-wrap { padding: 0 1.5rem; }
 }
 
 @media (min-width: 1024px) {
-  .wi-panel-wrap {
-    padding: 0 2rem;
-  }
+  .wi-panel-wrap { padding: 0 2rem; }
 }
 
 @media (max-width: 1023px) {
-  .wi-runway {
-    height: 520vh;
-  }
-
-  /* tile sits in the top half, copy docks at the bottom */
-  .wi-panel-wrap {
-    align-items: flex-end;
-    padding-bottom: 1.25rem;
-  }
-
+  .wi-runway { height: 520vh; }
+  .wi-panel-wrap { align-items: flex-end; padding-bottom: 1.25rem; }
   .wi-intro,
-  .wi-card {
-    align-self: end;
-    width: 100%;
-  }
-
-  .wi-card {
-    padding: 1rem 1.1rem 1.05rem;
-  }
-
-  .wi-card p {
-    font-size: 0.84rem;
-  }
-
-  .wi-tag {
-    display: none;
-  }
-}
-
-@media (max-width: 1023px) and (max-height: 760px) {
-  .wi-intro p {
-    display: none;
-  }
+  .wi-card { align-self: end; width: 100%; }
+  .wi-card { padding: 1rem 1.1rem 1.05rem; }
+  .wi-card p { font-size: 0.84rem; }
+  .wi-tag { display: none; }
 }

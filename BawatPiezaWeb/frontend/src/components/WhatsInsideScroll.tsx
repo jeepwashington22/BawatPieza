@@ -146,9 +146,10 @@ export default function WhatsInsideScroll({
       openScale = Math.max(0.3, Math.min(availH / 525, availW / 530));
       
       if (desktop) {
-        startScale = Math.min((vw * 0.36) / 517, (vh * 0.4) / 300);
-        startCx = vw / 2 + vw * 0.25;
-        startCy = vh * 0.52;
+        // must match where HowItWorks leaves the tile: centred, no slide
+        startScale = Math.min((vw * 0.5) / 517, (vh * 0.46) / 300);
+        startCx = vw / 2;
+        startCy = vh * 0.47;
         endCx = vw * 0.68;
         endCy = vh / 2 + 34;
       } else {

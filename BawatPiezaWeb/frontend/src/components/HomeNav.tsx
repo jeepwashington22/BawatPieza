@@ -2,7 +2,7 @@
 
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const NAV_ITEMS = [
   { label: "Overview", href: "#home" },
@@ -15,11 +15,25 @@ const NAV_ITEMS = [
 ];
 
 export default function HomeNav() {
+  const headerRef = useRef<HTMLElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [logoFailed, setLogoFailed] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [deploymentsActive, setDeploymentsActive] = useState(false);
   const [activeNav, setActiveNav] = useState("Overview");
+
+  const scrollToSection = (href: string) => {
+    if (!href.startsWith("#")) return;
+
+    const target = document.querySelector<HTMLElement>(href);
+    if (!target) return;
+
+    const headerHeight = headerRef.current?.offsetHeight ?? 64;
+    const targetTop = Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerHeight);
+    window.scrollTo({ top: targetTop, behavior: "smooth" });
+    setActiveNav(NAV_ITEMS.find((item) => item.href === href)?.label ?? "Overview");
+    setIsOpen(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -75,6 +89,7 @@ export default function HomeNav() {
   return (
     <>
       <header
+        ref={headerRef}
         className={`fixed inset-x-0 top-0 z-50 w-full border-b border-white/20 transition-colors duration-500 ${
           deploymentsActive
             ? "bg-[#0a101a]/85 backdrop-blur-md"
@@ -86,7 +101,15 @@ export default function HomeNav() {
         {/* painted through the footprint by HeroTileScroll, so the bar changes with the transition */}
         <span data-nav-reveal aria-hidden="true" className="nav-reveal" />
         <nav className="relative mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <a href="#home" aria-label="BawatPieza home" className="flex items-center rounded-md p-1 transition hover:bg-white/15">
+          <a
+            href="#home"
+            aria-label="BawatPieza home"
+            onClick={(event) => {
+              event.preventDefault();
+              scrollToSection("#home");
+            }}
+            className="flex items-center rounded-md p-1 transition hover:bg-white/15"
+          >
           {!logoFailed ? (
             <Image
               src="/bawat-pieza-logo.png"
@@ -111,7 +134,10 @@ export default function HomeNav() {
                 <a
                   key={item.label}
                   href={item.href}
-                  onClick={() => setActiveNav(item.label)}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    scrollToSection(item.href);
+                  }}
                   className={`group relative rounded-md px-2.5 py-1.5 text-xs font-medium tracking-[0.02em] transition-colors duration-200 ${
                     isActive
                       ? "bg-white/15 text-white"
@@ -162,9 +188,11 @@ export default function HomeNav() {
             <a
               key={item.label}
               href={item.href}
-                onClick={() => {
-                  setActiveNav(item.label);
-                  setIsOpen(false);
+                onClick={(event) => {
+                  if (item.href.startsWith("#")) {
+                    event.preventDefault();
+                    scrollToSection(item.href);
+                  }
                 }}
                 className={`group relative flex items-center justify-between rounded-md px-3 py-3 text-lg font-semibold transition-colors duration-200 ${
                   activeNav === item.label

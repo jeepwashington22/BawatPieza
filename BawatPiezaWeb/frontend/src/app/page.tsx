@@ -279,9 +279,19 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="faq" className="bg-[#0b1320] px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <Faqs01 />
+      {/* FAQ SECTION WITH RED-ORANGE BG, BLURRED CONTAINER, AND "faq text" TEXTMARK */}
+      <section id="faq" className="relative overflow-hidden bg-[#ea580c] px-4 py-24 sm:px-6 lg:px-8">
+        {/* Background Textmark */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden select-none z-0 opacity-15">
+          <span className="textmark-shine text-[clamp(5rem,18vw,16rem)] font-black tracking-tighter uppercase whitespace-nowrap">
+            faq text
+          </span>
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-7xl">
+          <div className="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.15)] backdrop-blur-xl sm:p-10">
+            <Faqs01 />
+          </div>
         </div>
       </section>
 

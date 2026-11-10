@@ -816,11 +816,11 @@ export default function HeroTileScroll({ children }: { children?: ReactNode }) {
         className="hero-section hero-pin relative flex items-center overflow-hidden px-4 pb-14 pt-20 sm:px-6 lg:px-8 lg:pt-16"
       >
         <div ref={wordmarkRef} className="hero-wordmarks" aria-hidden="true">
-          <span>BAWATPIEZA</span>
+          <span className="textmark-shine">BAWATPIEZA</span>
         </div>
         <div ref={bgWordsRef} className="t3-bgwords" aria-hidden="true">
-          <span ref={bgPiezoRef} className="t3-bgword t3-bgword-piezo">PIEZO</span>
-          <span ref={bgDynamoRef} className="t3-bgword t3-bgword-dynamo">DYNAMO</span>
+          <span ref={bgPiezoRef} className="t3-bgword t3-bgword-piezo textmark-shine">PIEZO</span>
+          <span ref={bgDynamoRef} className="t3-bgword t3-bgword-dynamo textmark-shine">DYNAMO</span>
         </div>
         <div ref={technologyRef} className="hero-technology">
           <span className="hero-technology-kicker">Energy harvesting system</span>
