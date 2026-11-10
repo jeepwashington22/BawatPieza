@@ -6,16 +6,19 @@ import { useEffect, useState } from "react";
 
 const NAV_ITEMS = [
   { label: "Overview", href: "#home" },
+  { label: "Generation", href: "#generation" },
   { label: "How it works", href: "#how" },
-  { label: "About", href: "#about" },
-  { label: "Features", href: "#about" },
-  { label: "Contact", href: "mailto:hello@bawatpieza.com" },
+  { label: "Tile inside", href: "#specs" },
+  { label: "Deployments", href: "#deployments" },
+  { label: "FAQ", href: "#faq" },
+  { label: "Contact", href: "#contact" },
 ];
 
 export default function HomeNav() {
   const [isOpen, setIsOpen] = useState(false);
   const [logoFailed, setLogoFailed] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [deploymentsActive, setDeploymentsActive] = useState(false);
   const [activeNav, setActiveNav] = useState("Overview");
 
   useEffect(() => {
@@ -23,6 +26,43 @@ export default function HomeNav() {
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const deployments = document.getElementById("deployments");
+    if (!deployments) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setDeploymentsActive(entry.isIntersecting),
+      { threshold: 0.2 },
+    );
+
+    observer.observe(deployments);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const sections = NAV_ITEMS.map((item) => document.querySelector<HTMLElement>(item.href)).filter(
+      (section): section is HTMLElement => section !== null,
+    );
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top))[0];
+
+        if (visible) {
+          const item = NAV_ITEMS.find((navItem) => navItem.href === `#${visible.target.id}`);
+          if (item) setActiveNav(item.label);
+        }
+      },
+      { rootMargin: "-18% 0px -62% 0px", threshold: [0, 0.1, 0.5] },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -35,11 +75,17 @@ export default function HomeNav() {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 w-full border-b border-white/20 bg-gradient-to-r from-[#b92713] via-[#e5481d] to-[#ff7a21] transition-colors duration-300 ${
+        className={`fixed inset-x-0 top-0 z-50 w-full border-b border-white/20 transition-colors duration-500 ${
+          deploymentsActive
+            ? "bg-[#0a101a]/85 backdrop-blur-md"
+            : "bg-gradient-to-r from-[#b92713] via-[#e5481d] to-[#ff7a21]"
+        } ${
           scrolled ? "shadow-[0_10px_30px_-18px_rgba(126,39,12,0.5)]" : ""
         }`}
       >
-        <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* painted through the footprint by HeroTileScroll, so the bar changes with the transition */}
+        <span data-nav-reveal aria-hidden="true" className="nav-reveal" />
+        <nav className="relative mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <a href="#home" aria-label="BawatPieza home" className="flex items-center rounded-md p-1 transition hover:bg-white/15">
           {!logoFailed ? (
             <Image
