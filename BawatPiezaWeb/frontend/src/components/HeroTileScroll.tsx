@@ -128,7 +128,7 @@ type CubeProps = {
 };
 
 /** A box made of five flat faces. Faces facing away are culled, so it stays cheap. */
-function Cube({ w, d, h, x = 0, y = 0, z = 0, m, front }: CubeProps) {
+export function Cube({ w, d, h, x = 0, y = 0, z = 0, m, front }: CubeProps) {
   return (
     <div className={`t3-cube ${m}`} style={{ transform: `translate3d(${x - w / 2}px, ${y - d / 2}px, ${z}px)` }}>
       <div className="t3-f t3-top" style={{ width: w, height: d, transform: `translateZ(${h}px)` }} />
@@ -152,7 +152,7 @@ function Cube({ w, d, h, x = 0, y = 0, z = 0, m, front }: CubeProps) {
  * A true round part built from n flat facets, each lit by its angle to the light.
  * tone = [hue, saturation %, lightness %, lightness swing %].
  */
-function Cyl({
+export function Cyl({
   r,
   h,
   n = 14,
@@ -217,7 +217,7 @@ function Cyl({
 }
 
 /** Two crossed upright planes. Reads as a round rod or spring from any angle. */
-function Stand({
+export function Stand({
   w,
   h,
   x = 0,
@@ -253,7 +253,7 @@ function Stand({
 }
 
 /** A flat plane lying in the XY plane, centred on the group origin. */
-function Plane({
+export function Plane({
   size,
   z = 0,
   className = "",
@@ -276,7 +276,7 @@ function Plane({
   );
 }
 
-function gearPath(cx: number, cy: number, teeth: number, ro: number, ri: number) {
+export function gearPath(cx: number, cy: number, teeth: number, ro: number, ri: number) {
   const step = (Math.PI * 2) / teeth;
   const pts: string[] = [];
   for (let i = 0; i < teeth; i++) {

@@ -68,9 +68,6 @@ export default function LandingPage() {
   const sharedStageRef = useRef<HTMLDivElement>(null);
   const sharedCamRef = useRef<HTMLDivElement>(null);
   const sharedSceneRef = useRef<HTMLDivElement>(null);
-  const sharedVeilRef = useRef<HTMLDivElement>(null);
-  const sharedHlRef = useRef<SVGSVGElement>(null);
-  const sharedTagRef = useRef<HTMLDivElement>(null);
 
   /* ---------- DEPLOYMENTS: vertical scroll -> smooth horizontal track ---------- */
   useEffect(() => {
@@ -172,17 +169,6 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-            
-            <div ref={sharedVeilRef} className="wi-veil" aria-hidden="true" />
-            
-            <svg ref={sharedHlRef} className="wi-hl" aria-hidden="true">
-              <path /><path /><path /><path />
-            </svg>
-            
-            <div ref={sharedTagRef} className="wi-tag" aria-hidden="true">
-              <b></b>
-              <span></span>
-            </div>
           </div>
         </div>
 
@@ -198,8 +184,8 @@ export default function LandingPage() {
             specs={SPECS} 
             head={
               <SectionHead
-                eyebrow="Specs"
-                lead="Details for the current prototype, as built and tested on a real pathway, not a projection from lab bench data."
+                eyebrow="Inside the tile"
+                lead="Every layer, from the top board down to the base, in one exploded view. Click the tile to open it."
               >
                 What’s inside <span className={GRADIENT_TEXT}>one tile.</span>
               </SectionHead>
@@ -207,9 +193,6 @@ export default function LandingPage() {
             stageRef={sharedStageRef} 
             camRef={sharedCamRef} 
             sceneRef={sharedSceneRef}
-            veilRef={sharedVeilRef}
-            hlRef={sharedHlRef}
-            tagRef={sharedTagRef}
           />
         </div>
       </div>
@@ -279,18 +262,44 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* FAQ SECTION WITH RED-ORANGE BG, BLURRED CONTAINER, AND "faq text" TEXTMARK */}
-      <section id="faq" className="relative overflow-hidden bg-[#ea580c] px-4 py-24 sm:px-6 lg:px-8">
-        {/* Background Textmark */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden select-none z-0 opacity-15">
-          <span className="textmark-shine text-[clamp(5rem,18vw,16rem)] font-black tracking-tighter uppercase whitespace-nowrap">
-            faq text
+      {/* FAQ: full-page, shiny "FAQ" textmark behind a 50/50 split. Questions on a blurred panel (left), intro copy (right). */}
+      <section id="faq" className="relative min-h-screen overflow-hidden bg-[#ea580c]">
+        {/* Background textmark */}
+        <div className="pointer-events-none absolute inset-0 z-0 flex select-none items-center justify-center overflow-hidden" aria-hidden="true">
+          <span className="textmark-shine whitespace-nowrap text-[clamp(10rem,40vw,42rem)] font-black uppercase leading-none tracking-tighter">
+            FAQ
           </span>
         </div>
 
-        <div className="relative z-10 mx-auto max-w-7xl">
-          <div className="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.15)] backdrop-blur-xl sm:p-10">
-            <Faqs01 />
+        <div className="relative z-10 grid min-h-screen lg:grid-cols-2">
+          {/* questions: blurred panel, runs the full height of the section */}
+          <div className="order-2 flex items-center border-t border-white/20 bg-white/10 px-6 py-14 backdrop-blur-xl sm:px-10 lg:order-1 lg:border-r lg:border-t-0 lg:px-14 lg:py-24">
+            <div className="mx-auto w-full max-w-2xl">
+              <Faqs01 />
+            </div>
+          </div>
+
+          {/* intro copy */}
+          <div className="order-1 flex items-center px-6 pb-6 pt-28 sm:px-10 lg:order-2 lg:px-16 lg:py-24">
+            <div className="max-w-md">
+              <span className="inline-flex items-center gap-3 text-[0.7rem] font-extrabold uppercase tracking-[0.2em] text-white">
+                <span className="block h-0.5 w-6 rounded bg-white" />
+                Common questions
+              </span>
+              <h2 className="mt-5 text-4xl font-extrabold leading-[0.98] tracking-[-0.045em] text-white sm:text-5xl lg:text-6xl">
+                Answers for the next step.
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-white/85 sm:text-lg">
+                Everything you need to know about turning everyday foot traffic into useful energy.
+              </p>
+              <a
+                href="mailto:hello@bawatpieza.com"
+                className="group mt-8 inline-flex items-center gap-2 rounded-full bg-[#152238] px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_-10px_rgba(21,34,56,0.6)] transition duration-300 hover:-translate-y-1 hover:bg-[#1f3252]"
+              >
+                Still have a question?
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
+            </div>
           </div>
         </div>
       </section>
