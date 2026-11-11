@@ -36,44 +36,38 @@ import InsideTileModel, {
 const SMOOTHING = 8;
 const OPEN_MS = 2400;
 const CLOSE_MS = 1500;
-/* opening is two steps: the footprint grows over the closed tile first (0 → FOOT_END),
+/* opening is two steps: the bolt grows over the closed tile first (0 → FOOT_END),
    and only then do the layers lift and the camera glides out (OPEN_SPLIT → 1). */
 const FOOT_END = 0.5;
 const OPEN_SPLIT = 0.42;
 const NAV = 72; // px kept clear for the fixed site nav
+/* clickable area over the closed tile, in tile units (multiplied by the tile's on-screen scale) */
+const HIT_W = 460;
+const HIT_H = 300;
 
-/* ---------- footprint mask (same shape and maths as the hero) ---------- */
-const FOOT_TILT = -14;
-const FOOT_VB = 130;
-const FOOT_CX = (56 + 15) / FOOT_VB;
-const FOOT_CY = (62 + 15) / FOOT_VB;
-const FOOT_A = 13 / FOOT_VB;
-const FOOT_B = 28 / FOOT_VB;
-const FOOT_START = 46;
+/* ---------- lightning-bolt mask (the transition shape) ----------
+   BOLT_PATH is drawn in a 100 x 100 box. To use your own logo, paste its path here and
+   set the 4 numbers below to the middle band of the bolt that is solid on every row:
+   BOLT_CX / BOLT_CY = centre of that band, BOLT_HX / BOLT_HY = its half width / half height
+   (all as fractions of the box). The reveal grows until that band covers the whole screen. */
+const BOLT_PATH = "M60 2 L20 56 L45 56 L36 98 L82 38 L56 38 L74 2 Z";
+const BOLT_CX = 0.51;
+const BOLT_CY = 0.47;
+const BOLT_HX = 0.17;
+const BOLT_HY = 0.09;
+const FOOT_START = 150; // size (px) of the bolt when it first appears on the tile
 const FOOT_SVG =
   "data:image/svg+xml," +
   encodeURIComponent(
-    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='-15 -15 130 130'><g fill='#000' transform='rotate(${FOOT_TILT} 56 62)'>` +
-      `<ellipse cx='40' cy='13' rx='7.5' ry='8.5'/><ellipse cx='54' cy='11' rx='5.2' ry='6.3'/>` +
-      `<ellipse cx='64' cy='15' rx='4.6' ry='5.6'/><ellipse cx='72' cy='22' rx='4.2' ry='5'/>` +
-      `<ellipse cx='78' cy='31' rx='3.8' ry='4.6'/>` +
-      `<ellipse cx='53' cy='44' rx='24' ry='20'/><ellipse cx='58' cy='62' rx='17' ry='20'/>` +
-      `<ellipse cx='56' cy='80' rx='17' ry='15'/></g></svg>`,
+    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>` +
+      `<path d='${BOLT_PATH}' fill='#000' stroke='#000' stroke-width='3' stroke-linejoin='round'/></svg>`,
   );
 
+/** Mask size at which the solid middle band of the bolt covers the whole screen from (cx, cy). */
 function footCoverSize(cx: number, cy: number, vw: number, vh: number) {
-  const t = (-FOOT_TILT * Math.PI) / 180;
-  const cos = Math.cos(t);
-  const sin = Math.sin(t);
-  let need = 0;
-  for (const dx of [-cx, vw - cx]) {
-    for (const dy of [-cy, vh - cy]) {
-      const lx = dx * cos - dy * sin;
-      const ly = dx * sin + dy * cos;
-      need = Math.max(need, Math.hypot(lx / FOOT_A, ly / FOOT_B));
-    }
-  }
-  return need * 1.04;
+  const dx = Math.max(cx, vw - cx);
+  const dy = Math.max(cy, vh - cy);
+  return Math.max(dx / BOLT_HX, dy / BOLT_HY) * 1.04;
 }
 
 function paintFoot(el: HTMLElement, B: number, cx: number, cy: number, off = false) {
@@ -93,7 +87,7 @@ function paintFoot(el: HTMLElement, B: number, cx: number, cy: number, off = fal
   set("mask-image", `url("${FOOT_SVG}")`);
   set("mask-repeat", "no-repeat");
   set("mask-size", `${B.toFixed(1)}px ${B.toFixed(1)}px`);
-  set("mask-position", `${(cx - FOOT_CX * B).toFixed(1)}px ${(cy - FOOT_CY * B).toFixed(1)}px`);
+  set("mask-position", `${(cx - BOLT_CX * B).toFixed(1)}px ${(cy - BOLT_CY * B).toFixed(1)}px`);
 }
 
 /* ---------- helpers ---------- */
@@ -579,6 +573,8 @@ export default function WhatsInsideScroll({
       const hv = smooth(range(p, [0.46, 0.6])) * (1 - clamp01(openT * 5));
       hotspot.style.left = `${(vw / 2).toFixed(1)}px`;
       hotspot.style.top = `${hotY.toFixed(1)}px`;
+      hotspot.style.width = `${(HIT_W * baseScale * k).toFixed(0)}px`;
+      hotspot.style.height = `${(HIT_H * baseScale * k).toFixed(0)}px`;
       hotspot.style.opacity = hv.toFixed(3);
       hotspot.style.visibility = hv < 0.01 ? "hidden" : "visible";
       hotspot.style.pointerEvents = hv > 0.6 && openGoal === 0 ? "auto" : "none";
@@ -876,10 +872,7 @@ export default function WhatsInsideScroll({
           onClick={() => ctrlRef.current?.open()}
           aria-label="Open the tile to see what is inside"
         >
-          <span className="ins-hotspot-ring" />
-          <span className="ins-hotspot-ring ins-hotspot-ring-2" />
-          <span className="ins-hotspot-core" />
-          <span className="ins-hotspot-label">Click to open</span>
+          <span className="ins-hotspot-label">Click the tile to open</span>
         </button>
 
         <div ref={ringRef} className="ins-iris-ring" aria-hidden="true" />

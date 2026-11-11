@@ -2813,3 +2813,296 @@ button.ins-label:focus-visible {
   padding: 0.35rem 0.8rem;
   font-size: 0.6rem;
 }
+
+/* ============================================================
+   WHAT'S INSIDE ONE TILE: the whole closed tile is the button
+   Append to the end of globals.css.
+   ============================================================ */
+.ins-hotspot {
+  /* width / height are set from the tile's size in WhatsInsideScroll.tsx */
+  border-radius: 1.75rem;
+  cursor: pointer;
+}
+
+.ins-hotspot:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.ins-hotspot-label {
+  top: auto;
+  bottom: -0.2rem;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.ins-hotspot:hover .ins-hotspot-label,
+.ins-hotspot:focus-visible .ins-hotspot-label {
+  background: #ea580c;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+/* ============================================================
+   FAQ: typing title caret + gliding pop-up questions
+   Append to the end of globals.css.
+   ============================================================ */
+
+/* typing caret */
+.faq-caret {
+  display: inline-block;
+  width: 0.06em;
+  height: 0.85em;
+  margin-left: 0.06em;
+  vertical-align: -0.06em;
+  border-radius: 1px;
+  background: #fff;
+  animation: faq-caret-blink 0.8s steps(1) infinite;
+  transition: opacity 0.4s ease 1.2s;
+}
+
+.faq-caret.is-idle {
+  opacity: 0;
+}
+
+.faq-caret.is-done {
+  opacity: 0;
+}
+
+@keyframes faq-caret-blink {
+  0%,
+  100% {
+    background: #fff;
+  }
+  50% {
+    background: transparent;
+  }
+}
+
+/* questions wait out of sight, then glide up and pop one after another */
+.faq-reveal:not(.faq-in) .faq-pop {
+  opacity: 0;
+  transform: translateY(56px) scale(0.94);
+}
+
+.faq-reveal.faq-in .faq-pop {
+  animation: faq-glide 0.95s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 120ms + 300ms);
+}
+
+@keyframes faq-glide {
+  0% {
+    opacity: 0;
+    transform: translateY(56px) scale(0.94);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-reveal:not(.faq-in) .faq-pop {
+    opacity: 1;
+    transform: none;
+  }
+  .faq-reveal.faq-in .faq-pop {
+    animation: none;
+  }
+  .faq-caret {
+    display: none;
+  }
+}
+
+/* ============================================================
+   FAQ: smooth open / close
+   Radix measures the answer and exposes its height as
+   --radix-accordion-content-height, so we animate real height
+   (plus a soft fade) instead of snapping.
+   ============================================================ */
+.faq-pop {
+  transition:
+    border-color 0.4s ease,
+    box-shadow 0.5s ease,
+    background-color 0.4s ease,
+    translate 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.faq-pop [role="region"] {
+  overflow: hidden;
+}
+
+.faq-pop [role="region"][data-state="open"] {
+  animation: faq-open 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.faq-pop [role="region"][data-state="closed"] {
+  animation: faq-close 400ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* the text eases in a beat after the box starts opening */
+.faq-pop [role="region"][data-state="open"] > div {
+  animation: faq-text-in 620ms cubic-bezier(0.22, 1, 0.36, 1) 90ms both;
+}
+
+.faq-pop [role="region"][data-state="closed"] > div {
+  animation: faq-text-out 260ms ease both;
+}
+
+@keyframes faq-open {
+  from { height: 0; opacity: 0; }
+  to { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+
+@keyframes faq-close {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to { height: 0; opacity: 0; }
+}
+
+@keyframes faq-text-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes faq-text-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-pop,
+  .faq-pop [role="region"],
+  .faq-pop [role="region"] > div {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   CONTACT: textmark, falling tile (left), blurred panel (right)
+   Driven by ContactSection.tsx
+   ============================================================ */
+.ct-section {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+  color: #fff;
+  background:
+    radial-gradient(55% 75% at 75% 55%, rgba(255, 190, 120, 0.35), transparent 70%),
+    linear-gradient(135deg, #f0621a 0%, #ea580c 55%, #c2410c 100%);
+}
+
+.ct-mark {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 700ms ease, transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ct-mark span {
+  font-size: clamp(4.5rem, 19vw, 24rem);
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 0.8;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.ct-section.is-play .ct-mark {
+  opacity: 1;
+  transform: none;
+}
+
+/* tile passes over the panel while it falls; it never blocks clicks */
+.ct-stage {
+  z-index: 10;
+}
+
+.ct-grid {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: inherit;
+}
+
+.ct-tile-area {
+  min-height: min(95vw, 460px);
+}
+
+.ct-panel {
+  display: flex;
+  align-items: center;
+  padding: 3.5rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  opacity: 0;
+  transform: translate3d(0, 48px, 0);
+  transition: opacity 800ms ease, transform 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ct-section.ct-in .ct-panel {
+  opacity: 1;
+  transform: none;
+}
+
+/* the contents rise one after another once the panel is in */
+.ct-rise {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition: opacity 600ms ease, transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ct-section.ct-in .ct-rise {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--i, 0) * 90ms + 350ms);
+}
+
+@media (min-width: 640px) {
+  .ct-panel {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ct-grid {
+    grid-template-columns: 1fr 1fr;
+    min-height: 100dvh;
+  }
+  /* contact panel on the left, tile lands in the right half */
+  .ct-panel {
+    order: 1;
+    padding: 6rem 3.5rem;
+    border-top: 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.25);
+    transform: translate3d(-90px, 0, 0);
+  }
+  .ct-tile-area {
+    order: 2;
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ct-mark,
+  .ct-panel,
+  .ct-rise {
+    transition: none;
+  }
+}

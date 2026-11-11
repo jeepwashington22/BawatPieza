@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { ArrowUpRight } from "lucide-react";
 
 import {
@@ -45,17 +46,19 @@ export default function Faqs01({ defaultValue }: { defaultValue?: string }) {
             <AccordionItem
               key={faq.q}
               value={`item-${index}`}
-              className="group overflow-hidden rounded-2xl border border-white/10 bg-transparent px-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 data-[state=open]:border-[var(--neon-orange)]/40 data-[state=open]:shadow-[0_12px_30px_-18px_rgba(255,140,40,0.7)]"
+              style={{ "--i": index } as CSSProperties}
+              /* the open / close motion itself lives in globals.css (.faq-pop) */
+              className="faq-pop group overflow-hidden rounded-2xl border border-white/10 bg-transparent px-5 hover:-translate-y-0.5 hover:border-white/20 data-[state=open]:border-white/50 data-[state=open]:shadow-[0_12px_30px_-18px_rgba(21,34,56,0.6)]"
             >
-              <AccordionTrigger className="gap-4 py-5 text-left text-sm font-semibold text-slate-100 hover:text-white [&>svg]:text-[var(--neon-orange)] [&[data-state=open]>svg]:rotate-180 sm:text-base">
+              <AccordionTrigger className="gap-4 py-5 text-left text-sm font-semibold text-slate-100 hover:text-white [&>svg]:text-white [&>svg]:transition-transform [&>svg]:duration-500 [&>svg]:ease-[cubic-bezier(0.22,1,0.36,1)] [&[data-state=open]>svg]:rotate-180 sm:text-base">
                 <span className="flex items-center gap-4">
-                  <span className="font-mono text-xs font-medium text-[var(--neon-orange)]/70">
+                  <span className="font-mono text-xs font-bold text-white">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   {faq.q}
                 </span>
               </AccordionTrigger>
-              <AccordionContent className="faq-answer-fade pl-9 text-sm text-slate-300">{faq.a}</AccordionContent>
+              <AccordionContent className="pl-9 text-sm text-slate-300">{faq.a}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
@@ -63,7 +66,7 @@ export default function Faqs01({ defaultValue }: { defaultValue?: string }) {
 
       <div className="relative z-10 mt-8 flex flex-col justify-between gap-3 border-t border-white/15 pt-5 text-xs text-white/70 sm:flex-row sm:items-center">
         <p>Have a project in mind?</p>
-        <a href="mailto:hello@bawatpieza.com" className="inline-flex items-center gap-1 font-semibold text-white transition hover:text-[var(--neon-orange)]">
+        <a href="mailto:hello@bawatpieza.com" className="inline-flex items-center gap-1 font-semibold text-white transition hover:text-[#152238]">
           Talk to the team <ArrowUpRight className="h-3.5 w-3.5" />
         </a>
       </div>

@@ -16,6 +16,7 @@ import WhatsInsideScroll from "@/components/WhatsInsideScroll";
 import Footer from "@/components/Footer";
 import Faqs01 from "@/components/ui/faqs-01";
 import HomeNav from "@/components/HomeNav";
+import ContactSection from "@/components/ContactSection";
 
 /* ---------- content (edit copy / image paths here) ---------- */
 const STEPS = [
@@ -58,6 +59,120 @@ function SectionHead({ eyebrow, children, lead, dark = false }: { eyebrow: strin
 
 const GRADIENT_TEXT =
   "bg-gradient-to-r from-[#ffb15c] via-[var(--neon-orange)] to-[#ea580c] bg-clip-text text-transparent";
+
+/* ---------- FAQ: typing title + gliding pop-up questions ---------- */
+
+/** true while the element is on screen: turns on when it scrolls into view, off once it has fully left, so the animation replays every time */
+function useSeen<T extends HTMLElement>(threshold = 0.15) {
+  const ref = useRef<T>(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setSeen(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.intersectionRatio >= threshold) setSeen(true);
+        else if (entry.intersectionRatio === 0) setSeen(false);
+      },
+      { threshold: [0, threshold] },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [threshold]);
+  return [ref, seen] as const;
+}
+
+/** Types `text` out letter by letter once `start` is true. The full text is kept in the layout, so nothing jumps. */
+function TypedText({ text, start, speed = 60, delay = 250 }: { text: string; start: boolean; speed?: number; delay?: number }) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (!start) {
+      setN(0); // reset, so the title types again the next time the section is active
+      return;
+    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setN(text.length);
+      return;
+    }
+    let i = 0;
+    let timer = 0;
+    const begin = window.setTimeout(() => {
+      timer = window.setInterval(() => {
+        i += 1;
+        setN(i);
+        if (i >= text.length) window.clearInterval(timer);
+      }, speed);
+    }, delay);
+    return () => {
+      window.clearTimeout(begin);
+      window.clearInterval(timer);
+    };
+  }, [start, text, speed, delay]);
+
+  const done = n >= text.length;
+  return (
+    <>
+      <span className="sr-only">{text}</span>
+      <span className="invisible" aria-hidden="true">
+        {text}
+      </span>
+      <span className="absolute inset-0" aria-hidden="true">
+        {text.slice(0, n)}
+        <span className={`faq-caret${done ? " is-done" : ""}${start ? "" : " is-idle"}`} />
+      </span>
+    </>
+  );
+}
+
+function FaqSection() {
+  const [ref, seen] = useSeen<HTMLElement>(0.15);
+  return (
+    <section ref={ref} id="faq" className="relative min-h-screen overflow-hidden bg-[#ea580c]">
+      {/* Background textmark */}
+      <div className="pointer-events-none absolute inset-0 z-0 flex select-none items-center justify-center overflow-hidden" aria-hidden="true">
+        <span className="textmark-shine whitespace-nowrap text-[clamp(10rem,40vw,42rem)] font-black uppercase leading-none tracking-tighter">
+          FAQ
+        </span>
+      </div>
+
+      <div className="relative z-10 grid min-h-screen lg:grid-cols-2">
+        {/* title + intro copy on the left */}
+        <div className="flex items-center px-6 pb-6 pt-28 sm:px-10 lg:px-16 lg:py-24">
+          <div className="max-w-md">
+            <span className="inline-flex items-center gap-3 text-[0.7rem] font-extrabold uppercase tracking-[0.2em] text-white">
+              <span className="block h-0.5 w-6 rounded bg-white" />
+              Common questions
+            </span>
+            <h2 className="relative mt-5 text-4xl font-extrabold leading-[0.98] tracking-[-0.045em] text-white sm:text-5xl lg:text-6xl">
+              <TypedText text="Answers for the next step." start={seen} />
+            </h2>
+            <p className="mt-5 text-base leading-relaxed text-white/85 sm:text-lg">
+              Everything you need to know about turning everyday foot traffic into useful energy.
+            </p>
+            <a
+              href="mailto:hello@bawatpieza.com"
+              className="group mt-8 inline-flex items-center gap-2 rounded-full bg-[#152238] px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_-10px_rgba(21,34,56,0.6)] transition duration-300 hover:-translate-y-1 hover:bg-[#1f3252]"
+            >
+              Still have a question?
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </a>
+          </div>
+        </div>
+
+        {/* questions: blurred panel on the right, runs the full height of the section */}
+        <div className="flex items-center border-t border-white/20 bg-white/10 px-6 py-14 backdrop-blur-xl sm:px-10 lg:border-l lg:border-t-0 lg:px-14 lg:py-24">
+          <div className={`faq-reveal mx-auto w-full max-w-2xl${seen ? " faq-in" : ""}`}>
+            <Faqs01 />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function LandingPage() {
   const [activeDeployment, setActiveDeployment] = useState(0);
@@ -263,101 +378,9 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ: full-page, shiny "FAQ" textmark behind a 50/50 split. Questions on a blurred panel (left), intro copy (right). */}
-      <section id="faq" className="relative min-h-screen overflow-hidden bg-[#ea580c]">
-        {/* Background textmark */}
-        <div className="pointer-events-none absolute inset-0 z-0 flex select-none items-center justify-center overflow-hidden" aria-hidden="true">
-          <span className="textmark-shine whitespace-nowrap text-[clamp(10rem,40vw,42rem)] font-black uppercase leading-none tracking-tighter">
-            FAQ
-          </span>
-        </div>
+      <FaqSection />
 
-        <div className="relative z-10 grid min-h-screen lg:grid-cols-2">
-          {/* questions: blurred panel, runs the full height of the section */}
-          <div className="order-2 flex items-center border-t border-white/20 bg-white/10 px-6 py-14 backdrop-blur-xl sm:px-10 lg:order-1 lg:border-r lg:border-t-0 lg:px-14 lg:py-24">
-            <div className="mx-auto w-full max-w-2xl">
-              <Faqs01 />
-            </div>
-          </div>
-
-          {/* intro copy */}
-          <div className="order-1 flex items-center px-6 pb-6 pt-28 sm:px-10 lg:order-2 lg:px-16 lg:py-24">
-            <div className="max-w-md">
-              <span className="inline-flex items-center gap-3 text-[0.7rem] font-extrabold uppercase tracking-[0.2em] text-white">
-                <span className="block h-0.5 w-6 rounded bg-white" />
-                Common questions
-              </span>
-              <h2 className="mt-5 text-4xl font-extrabold leading-[0.98] tracking-[-0.045em] text-white sm:text-5xl lg:text-6xl">
-                Answers for the next step.
-              </h2>
-              <p className="mt-5 text-base leading-relaxed text-white/85 sm:text-lg">
-                Everything you need to know about turning everyday foot traffic into useful energy.
-              </p>
-              <a
-                href="mailto:hello@bawatpieza.com"
-                className="group mt-8 inline-flex items-center gap-2 rounded-full bg-[#152238] px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_-10px_rgba(21,34,56,0.6)] transition duration-300 hover:-translate-y-1 hover:bg-[#1f3252]"
-              >
-                Still have a question?
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="contact" className="relative overflow-hidden bg-[var(--background)] px-4 py-20 text-[var(--text)] sm:px-6 sm:py-24 lg:px-8">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(45%_100%_at_78%_10%,rgba(255,140,40,0.22),transparent_70%)]" />
-        <div className="pointer-events-none absolute -left-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full border border-[var(--neon-orange)]/15" />
-        <div className="pointer-events-none absolute -left-12 top-1/2 h-48 w-48 -translate-y-1/2 rounded-full border border-[var(--neon-orange)]/20" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#ea580c]/20 bg-white/60 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[#ea580c] shadow-sm">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--neon-orange)]" />
-              Start a conversation
-            </span>
-            <h2 className="mt-6 max-w-2xl text-4xl font-extrabold leading-[0.98] tracking-[-0.045em] sm:text-6xl">
-              Make every step <span className={GRADIENT_TEXT}>count.</span>
-            </h2>
-            <p className="mt-6 max-w-lg text-base leading-relaxed text-[var(--muted)] sm:text-lg">
-              Tell us where people walk. We’ll help you turn that everyday movement into a smarter, more useful pathway.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-5">
-              <a
-                href="mailto:hello@bawatpieza.com"
-                className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-[#ff9a3c] to-[#ea580c] px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_-10px_rgba(234,88,12,0.65)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_38px_-10px_rgba(234,88,12,0.75)]"
-              >
-                Get in touch
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
-              <span className="text-xs font-medium text-[var(--muted)]">hello@bawatpieza.com</span>
-            </div>
-          </div>
-
-          <div className="relative">
-            <div className="contact-orbit absolute -inset-5 rounded-[2rem] border border-[var(--neon-orange)]/20" />
-            <div className="relative overflow-hidden rounded-[1.75rem] border border-white/80 bg-white/75 p-6 shadow-[0_24px_70px_-30px_rgba(21,34,56,0.35)] backdrop-blur-sm sm:p-8">
-              <div className="absolute right-0 top-0 h-36 w-36 rounded-full bg-[radial-gradient(circle,rgba(255,140,40,0.28),transparent_70%)]" />
-              <div className="relative">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ea580c]">What happens next</p>
-                <div className="mt-6 space-y-5">
-                  {[
-                    ["01", "Share your pathway", "Tell us about the place and the people moving through it."],
-                    ["02", "Shape the opportunity", "We’ll map the traffic pattern to a practical pilot."],
-                    ["03", "Power what matters", "Together, we’ll identify the best low-draw use for every step."],
-                  ].map(([number, title, body]) => (
-                    <div key={number} className="flex gap-4">
-                      <span className="font-mono text-xs font-bold text-[var(--neon-orange)]">{number}</span>
-                      <div>
-                        <h3 className="text-sm font-bold text-[var(--text)]">{title}</h3>
-                        <p className="mt-1 text-xs leading-relaxed text-[var(--muted)]">{body}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ContactSection />
 
       </main>
       <Footer />
